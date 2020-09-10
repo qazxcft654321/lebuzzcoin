@@ -6,7 +6,9 @@ import (
 	"os"
 
 	"lebuzzcoin/core"
+	"lebuzzcoin/middlewares"
 
+	"github.com/didip/tollbooth"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -14,6 +16,7 @@ import (
 
 func main() {
 	e := echo.New()
+
 	err := godotenv.Load()
 	if err != nil {
 		e.Logger.Fatal("error loading env file")
@@ -24,7 +27,9 @@ func main() {
 		log.Fatalf("Error while retrieving API version from file: %v \n", err)
 	}
 
+	// Setup middlewares at router level
 	e.Use(middleware.LoggerWithConfig(core.GetLoggerConfig()))
+	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(3, nil))) // NOTE: set limit at 3/s
 	e.Use(middleware.CORSWithConfig(core.GetCORSConfig()))
 	e.Use(middleware.SecureWithConfig(core.GetSecureConfig()))
 	e.Use(middleware.BodyLimit("3M"))
