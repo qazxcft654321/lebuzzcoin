@@ -14,7 +14,7 @@ format: ## Format the files
 	@go vet ./...
 
 test: ## Run tests
-	@go test $(PKG_LIST)
+	@go test -v $(PKG_LIST)
 
 loc: ## Print LOC of all .go files
 	@find . -name '*.go' | xargs wc -l
