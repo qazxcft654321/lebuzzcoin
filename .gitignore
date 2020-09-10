@@ -1,0 +1,6 @@
+app
+TODO
+go.sum
+.env
+tls/
+.DS_Store

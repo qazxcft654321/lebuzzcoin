@@ -1,34 +1,51 @@
 package main
 
 import (
-	"fmt"
+	"bufio"
+	"github.com/labstack/echo/v4"
+	"log"
+	"net/http"
+	"os"
 )
 
-// TODO: implement REST API production rdy
-// * TLS?
-// * CORS?
-// * database sqlite?
-// * env config
-// * logger stdout?
-// * rate limiter
-// * doc + README
+var HTTPPort string = "8080"
 
-// TODO: /version
-// * print API version (for test purpose)
+// TODO: move to something like helper later + better name convention?
+func GetApiVersion(versionFile string) (string, error) {
+	var version string
+	if _, err := os.Stat(versionFile); err != nil {
+		return version, err
+	}
 
-// TODO: /fizzbuzz (public)
-// * five parameters, 3 int (int1, int2, limit) & 2 string (str1, str2)
-// * int1
-// * int2
-// * limit (go from 1 to limit)
-// * return list from 1 to limit where:
-//      - all multiples of int1 are replaced by str1
-//      - all multiples of int2 are replaced by str2
-//      - all multiples of int1+int2 replaced by str1+str2
-// * with tests
+	file, err := os.Open(versionFile)
+	if err != nil {
+		return version, err
+	}
+	defer file.Close()
 
-// TODO: /stats
-// * return:
-//      - the most submited sequence
-//      - the number of hits
-// * with tests
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		version = scanner.Text()
+	}
+
+	err = scanner.Err()
+	return version, err
+}
+
+func main() {
+	e := echo.New()
+
+	APIVersion, err := GetApiVersion("VERSION")
+	if err != nil {
+		log.Fatalf("error while retrieving API version from file: %v", err)
+	}
+
+	e.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"status":  "success",
+			"message": "Lebuzzcoin-API v" + APIVersion,
+		})
+	})
+
+	log.Fatal(e.Start(":" + HTTPPort))
+}
