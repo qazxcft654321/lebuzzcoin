@@ -7,7 +7,14 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func GetAPIVersionFromFile(file string) (string, error) {
+func InitAPI() error {
+	APIVersion, err := getAPIVersionFromFile("VERSION")
+	os.Setenv("APIVERSION", APIVersion)
+
+	return err
+}
+
+func getAPIVersionFromFile(file string) (string, error) {
 	var version string
 	if _, err := os.Stat(file); err != nil {
 		return version, err

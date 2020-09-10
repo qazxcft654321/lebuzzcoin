@@ -1,11 +1,12 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"os"
 
 	"lebuzzcoin/core"
+	"lebuzzcoin/handlers"
 	"lebuzzcoin/middlewares"
 
 	"github.com/didip/tollbooth"
@@ -22,22 +23,31 @@ func main() {
 		e.Logger.Fatal("error loading env file")
 	}
 
-	APIVersion, err := core.GetAPIVersionFromFile("VERSION")
+	err = core.InitAPI()
 	if err != nil {
-		log.Fatalf("Error while retrieving API version from file: %v \n", err)
+		e.Logger.Fatalf("Error while retrieving API version from file: %v \n", err)
 	}
+	fmt.Println("Lebuzzcoin-API v" + os.Getenv("APIVERSION"))
 
-	// Setup middlewares at router level
+	// Setup some middlewares at router level
 	e.Use(middleware.LoggerWithConfig(core.GetLoggerConfig()))
 	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(3, nil))) // NOTE: set limit at 3/s
 	e.Use(middleware.CORSWithConfig(core.GetCORSConfig()))
 	e.Use(middleware.SecureWithConfig(core.GetSecureConfig()))
 	e.Use(middleware.BodyLimit("3M"))
 
-	e.GET("/", func(c echo.Context) error {
+	// Setup groups
+	v1 := e.Group("/v1")
+
+	// Setup handler struct
+	h := handlers.New(os.Stdout)
+
+	// TODO: move to handler
+	e.GET("/", h.GetAPIVersion)
+	v1.POST("/fizzbuzz", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"status":  "success",
-			"message": "Lebuzzcoin-API v" + APIVersion,
+			"message": "...",
 		})
 	})
 

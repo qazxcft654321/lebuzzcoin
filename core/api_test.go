@@ -29,7 +29,7 @@ func TestGetAPIVersionFromFile(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			version, err := GetAPIVersionFromFile(tc.file)
+			version, err := getAPIVersionFromFile(tc.file)
 			assert.IsType(t, tc.expected, err)
 			assert.Equal(t, len(version), tc.stringLenght)
 		})
