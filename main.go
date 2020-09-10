@@ -30,5 +30,5 @@ func main() {
 		})
 	})
 
-	log.Fatal(e.Start(":" + os.Getenv("HTTP_PORT")))
+	log.Fatal(e.StartTLS(":"+os.Getenv("HTTP_PORT"), os.Getenv("CERT_PEM"), os.Getenv("KEY_PEM")))
 }

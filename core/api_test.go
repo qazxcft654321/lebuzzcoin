@@ -11,18 +11,18 @@ func TestGetAPIVersionFromFile(t *testing.T) {
 	tests := map[string]struct {
 		file         string
 		stringLenght int
-		expected  interface{}
+		expected     interface{}
 	}{
 		"case1": {
 			file:         "BADFILE",
 			stringLenght: 0,
-			expected:  &os.PathError{},
+			expected:     &os.PathError{},
 		},
 
 		"case2": {
 			file:         "../VERSION",
 			stringLenght: 5,
-			expected:  nil,
+			expected:     nil,
 		},
 	}
 
