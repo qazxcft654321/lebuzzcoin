@@ -2,13 +2,13 @@ package main
 
 import (
 	"bufio"
-	"github.com/labstack/echo/v4"
 	"log"
 	"net/http"
 	"os"
-)
 
-var HTTPPort string = "8080"
+	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+)
 
 // TODO: move to something like helper later + better name convention?
 func GetApiVersion(versionFile string) (string, error) {
@@ -33,13 +33,17 @@ func GetApiVersion(versionFile string) (string, error) {
 }
 
 func main() {
-	e := echo.New()
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("error loading env file")
+	}
 
 	APIVersion, err := GetApiVersion("VERSION")
 	if err != nil {
 		log.Fatalf("error while retrieving API version from file: %v", err)
 	}
 
+	e := echo.New()
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"status":  "success",
@@ -47,5 +51,5 @@ func main() {
 		})
 	})
 
-	log.Fatal(e.Start(":" + HTTPPort))
+	log.Fatal(e.Start(":" + os.Getenv("HTTP_PORT")))
 }
