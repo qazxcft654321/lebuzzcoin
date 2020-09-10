@@ -13,9 +13,10 @@ import (
 )
 
 func main() {
+	e := echo.New()
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("error loading env file")
+		e.Logger.Fatal("error loading env file")
 	}
 
 	APIVersion, err := core.GetAPIVersionFromFile("VERSION")
@@ -23,7 +24,6 @@ func main() {
 		log.Fatalf("Error while retrieving API version from file: %v \n", err)
 	}
 
-	e := echo.New()
 	e.Use(middleware.LoggerWithConfig(core.GetLoggerConfig()))
 	e.Use(middleware.CORSWithConfig(core.GetCORSConfig()))
 	e.Use(middleware.SecureWithConfig(core.GetSecureConfig()))
@@ -36,5 +36,5 @@ func main() {
 		})
 	})
 
-	log.Fatal(e.StartTLS(":"+os.Getenv("HTTP_PORT"), os.Getenv("CERT_PEM"), os.Getenv("KEY_PEM")))
+	e.Logger.Fatal(e.StartTLS(":"+os.Getenv("HTTP_PORT"), os.Getenv("CERT_PEM"), os.Getenv("KEY_PEM")))
 }
