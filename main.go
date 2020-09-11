@@ -28,7 +28,7 @@ func main() {
 		e.Logger.Fatalf("Error retrieving API version from file: %v \n", err)
 	}
 
-	// Redis
+	// Cache
 	cache, err := cache.NewCache(cache.Options{Address: os.Getenv("REDIS_ADDR")})
 	if err != nil {
 		e.Logger.Fatalf("Cannot ping: %v \n", err)
