@@ -20,18 +20,18 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		e.Logger.Fatal("error loading env file")
+		e.Logger.Fatal("Error loading env file")
 	}
 
 	err = core.InitAPI()
 	if err != nil {
-		e.Logger.Fatalf("Error while retrieving API version from file: %v \n", err)
+		e.Logger.Fatalf("Error retrieving API version from file: %v \n", err)
 	}
 	fmt.Println("Lebuzzcoin-API v" + os.Getenv("APIVERSION"))
 
 	// Setup some middlewares at router level
 	e.Use(middleware.LoggerWithConfig(core.GetLoggerConfig()))
-	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(3, nil))) // NOTE: set limit at 3/s
+	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(1, nil))) // NOTE: set limit at 3/s
 	e.Use(middleware.CORSWithConfig(core.GetCORSConfig()))
 	e.Use(middleware.SecureWithConfig(core.GetSecureConfig()))
 	e.Use(middleware.BodyLimit("3M"))
