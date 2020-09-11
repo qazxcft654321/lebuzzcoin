@@ -1,15 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
-	"lebuzzcoin/core"
+	"lebuzzcoin/core/api"
+	"lebuzzcoin/core/cache"
 	"lebuzzcoin/handlers"
 	"lebuzzcoin/middlewares"
 
 	"github.com/didip/tollbooth"
-	"github.com/go-redis/redis"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -23,36 +22,30 @@ func main() {
 		e.Logger.Fatal("Error loading env file")
 	}
 
-	err = core.InitAPI()
+	// API
+	err = api.Init()
 	if err != nil {
 		e.Logger.Fatalf("Error retrieving API version from file: %v \n", err)
 	}
-	fmt.Println("--> Lebuzzcoin-API v" + os.Getenv("APIVERSION"))
 
 	// Redis
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_ADDR"),
-		Password: os.Getenv("REDIS_PASSWORD"),
-		DB:       0,
-	})
-	_, err = rdb.Ping().Result()
+	cache, err := cache.NewCache(cache.Options{Address: os.Getenv("REDIS_ADDR")})
 	if err != nil {
 		e.Logger.Fatalf("Cannot ping: %v \n", err)
 	}
-	fmt.Println("--> Redis OK")
 
 	// Setup some middlewares at router level
-	e.Use(middleware.LoggerWithConfig(core.GetLoggerConfig()))
+	e.Use(middleware.LoggerWithConfig(api.GetLoggerConfig()))
 	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(2, nil))) // NOTE: set limit at 2/s (hardcore mode)
-	e.Use(middleware.CORSWithConfig(core.GetCORSConfig()))
-	e.Use(middleware.SecureWithConfig(core.GetSecureConfig()))
+	e.Use(middleware.CORSWithConfig(api.GetCORSConfig()))
+	e.Use(middleware.SecureWithConfig(api.GetSecureConfig()))
 	e.Use(middleware.BodyLimit("3M"))
 
 	// Setup groups
 	v1 := e.Group("/v1")
 
 	// Setup handler struct
-	h := handlers.New(os.Stdout, rdb)
+	h := handlers.New(os.Stdout, cache)
 
 	// Routes
 	e.GET("/", h.GetAPIVersion)

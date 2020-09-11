@@ -1,6 +1,7 @@
-package core
+package api
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 
@@ -10,28 +11,34 @@ import (
 
 func TestGetAPIVersionFromFile(t *testing.T) {
 	tests := map[string]struct {
-		file         string
-		stringLenght int
-		expected     interface{}
+		version  string
+		expected interface{}
 	}{
 		"case1": {
-			file:         "BADFILE",
-			stringLenght: 0,
-			expected:     &os.PathError{},
+			expected: &os.PathError{},
 		},
 
 		"case2": {
-			file:         "../VERSION",
-			stringLenght: 5,
-			expected:     nil,
+			version:  "6.6.6",
+			expected: nil,
 		},
 	}
 
+	var vFile string = "./test_api_version"
+
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			version, err := getAPIVersionFromFile(tc.file)
+			if len(tc.version) > 1 {
+				vByte := []byte(tc.version)
+				err := ioutil.WriteFile(vFile, vByte, 0644)
+				assert.NoError(t, err)
+			}
+
+			version, err := getAPIVersionFromFile(vFile)
 			assert.IsType(t, tc.expected, err)
-			assert.Equal(t, len(version), tc.stringLenght)
+			assert.Equal(t, version, tc.version)
+
+			_ = os.Remove(vFile)
 		})
 	}
 }

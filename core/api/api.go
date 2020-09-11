@@ -1,4 +1,4 @@
-package core
+package api
 
 import (
 	"bufio"
@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func InitAPI() error {
+func Init() error {
 	APIVersion, err := getAPIVersionFromFile("VERSION")
 	os.Setenv("APIVERSION", APIVersion)
 

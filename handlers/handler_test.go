@@ -8,14 +8,15 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-redis/redis"
+	"lebuzzcoin/core/cache"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewHandler(t *testing.T) {
-	h := New(ioutil.Discard, &redis.Client{})
+	h := New(ioutil.Discard, &cache.Client{})
 
 	assert.IsType(t, h, &Handler{})
 	assert.NotEmpty(t, h)

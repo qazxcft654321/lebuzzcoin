@@ -24,7 +24,6 @@ func (h *Handler) GetAPIVersion(c echo.Context) error {
 	})
 }
 
-// TODO: make test
 func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	fizzbuzz := &models.Fizzbuzz{}
 	if err := c.Bind(fizzbuzz); err != nil {
@@ -40,13 +39,12 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	hash := fizzbuzz.HashData()
 
 	// Retrive from cache
-	cache, err := h.rdb.Get(hash).Result()
+	cache, err := h.cache.Get(hash)
 	if err != nil && err != redis.Nil {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
 		return h.RespondJSONBadRequest()
 	}
 
-	// TODO: abstract redis to avoid dependencies
 	// Building result from cache
 	result := &models.Result{}
 	if len(cache) > 1 {
@@ -70,7 +68,7 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 			return h.RespondJSONBadRequest()
 		}
 
-		err = h.rdb.Set(hash, json, 0).Err()
+		err = h.cache.Set(hash, json, 0)
 		if err != nil {
 			h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching data")
 			return h.RespondJSONBadRequest()

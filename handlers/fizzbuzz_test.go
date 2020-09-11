@@ -9,10 +9,9 @@ import (
 	"os"
 	"testing"
 
+	"lebuzzcoin/core/cache"
 	"lebuzzcoin/models"
 
-	"github.com/alicebob/miniredis"
-	"github.com/go-redis/redis"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,7 +32,7 @@ func TestGetAPIVersionHandler(t *testing.T) {
 		},
 	}
 
-	h := New(ioutil.Discard, &redis.Client{})
+	h := New(ioutil.Discard, &cache.Client{})
 	e := echo.New()
 
 	for name, tc := range tests {
@@ -53,7 +52,6 @@ func TestGetAPIVersionHandler(t *testing.T) {
 	}
 }
 
-// TODO: abstract redis to avoid dependencies
 func TestComputeFizzbuzz(t *testing.T) {
 	tests := map[string]struct {
 		fizzbuzz *models.Fizzbuzz
@@ -151,12 +149,10 @@ func TestComputeFizzbuzz(t *testing.T) {
 		},
 	}
 
-	mr, err := miniredis.Run()
+	cache, err := cache.NewTestCache()
 	assert.NoError(t, err)
 
-	rdb := redis.NewClient(&redis.Options{Addr: mr.Addr()})
-
-	h := New(ioutil.Discard, rdb)
+	h := New(ioutil.Discard, cache)
 	e := echo.New()
 
 	for name, tc := range tests {

@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/go-redis/redis"
+	"lebuzzcoin/core/cache"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"gopkg.in/go-playground/validator.v9"
@@ -22,10 +23,10 @@ const (
 type Handler struct {
 	logger    echo.Logger
 	validator *validator.Validate
-	rdb       *redis.Client
+	cache     *cache.Client
 }
 
-func New(logOutput io.Writer, redisClient *redis.Client) *Handler {
+func New(logOutput io.Writer, cache *cache.Client) *Handler {
 	logger := echo.New().Logger
 	logger.SetOutput(logOutput)
 	logger.SetLevel(log.INFO)
@@ -34,7 +35,7 @@ func New(logOutput io.Writer, redisClient *redis.Client) *Handler {
 	return &Handler{
 		logger:    logger,
 		validator: validator.New(),
-		rdb:       redisClient,
+		cache:     cache,
 	}
 }
 

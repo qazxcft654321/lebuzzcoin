@@ -24,6 +24,42 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "compute fizzbuzz",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"mod_a\": 2,\n\t\"mod_b\": 5,\n\t\"limit\": 1000,\n\t\"replace_a\": \"testA\",\n\t\"replace_b\": \"testB\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:4433/v1/fizzbuzz/compute",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "4433",
+					"path": [
+						"v1",
+						"fizzbuzz",
+						"compute"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
