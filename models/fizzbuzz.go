@@ -5,12 +5,19 @@ import (
 	"encoding/hex"
 )
 
+// TODO: all nums are uint32 so range = 0 > 2^32 | max = (str 20B * limit 1000) < 512B redis max entry
 type Fizzbuzz struct {
-	ModA     uint32 `json:"mod_a" validate:"required,numeric"`
-	ModB     uint32 `json:"mod_b" validate:"required,numeric"`
-	Limit    uint32 `json:"limit" validate:"required,numeric"`
-	ReplaceA string `json:"replace_a" validate:"required,alphanum"`
+	ModA     uint16 `json:"mod_a" validate:"required,numeric,max=10000"`
+	ModB     uint16 `json:"mod_b" validate:"required,numeric,max=10000"`
+	Limit    uint16 `json:"limit" validate:"required,numeric,max=10000"`
+	ReplaceA string `json:"replace_a" validate:"required,alphanum,max=20"`
 	ReplaceB string `json:"replace_b" validate:"required,alphanum"`
+}
+
+type Result struct {
+	Hash     string
+	Fizzbuzz *Fizzbuzz
+	Result   []string
 }
 
 func (fb *Fizzbuzz) HashData() string {

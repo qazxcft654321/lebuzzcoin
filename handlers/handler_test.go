@@ -3,18 +3,19 @@ package handlers
 import (
 	"bytes"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewHandler(t *testing.T) {
-	h := New(os.Stdout)
+	h := New(ioutil.Discard, &redis.Client{})
 
 	assert.IsType(t, h, &Handler{})
 	assert.NotEmpty(t, h)

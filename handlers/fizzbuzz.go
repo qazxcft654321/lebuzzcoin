@@ -1,11 +1,14 @@
 package handlers
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
 	"os"
 
 	"lebuzzcoin/models"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,7 +26,6 @@ func (h *Handler) GetAPIVersion(c echo.Context) error {
 }
 
 // TODO: make test
-// TODO: all nums are uint32 so range = 0 > 2^32
 func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	fizzbuzz := &models.Fizzbuzz{}
 	if err := c.Bind(fizzbuzz); err != nil {
@@ -37,10 +39,43 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	}
 
 	hash := fizzbuzz.HashData()
-	// TODO: cache strategy??
+
+	// TODO: refact !
+	ctx := context.Background()
+	val, err := h.rdb.Get(ctx, hash).Result()
+	if err != nil && err != redis.Nil {
+		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
+		return h.RespondJSONBadRequest()
+	}
+
+	result := &models.Result{}
+	if len(val) > 1 {
+		err := json.Unmarshal([]byte(val), result)
+		if err != nil {
+			h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
+			return h.RespondJSONBadRequest()
+		}
+	} else {
+		result.Hash = hash
+		result.Fizzbuzz = fizzbuzz
+		// TODO: process calc
+
+		json, err := json.Marshal(result)
+		if err != nil {
+			h.LogErrorMessage("handlers.fizzbuzz", err, "Error encoding struct to json")
+			return h.RespondJSONBadRequest()
+		}
+
+		// TODO: cache time limit
+		err = h.rdb.Set(ctx, hash, json, 0).Err()
+		if err != nil {
+			h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching data")
+			return h.RespondJSONBadRequest()
+		}
+	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": RESPONSE_STATUS_SUCCESS,
-		"data":   hash,
+		"data":   result,
 	})
 }

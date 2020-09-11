@@ -6,6 +6,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -26,7 +27,7 @@ func TestGetAPIVersionHandler(t *testing.T) {
 		},
 	}
 
-	h := New(ioutil.Discard)
+	h := New(ioutil.Discard, &redis.Client{})
 	e := echo.New()
 	os.Unsetenv("APIVERSION")
 
