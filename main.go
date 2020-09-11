@@ -30,7 +30,7 @@ func main() {
 
 	// Setup some middlewares at router level
 	e.Use(middleware.LoggerWithConfig(core.GetLoggerConfig()))
-	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(1, nil))) // NOTE: set limit at 1/s (hardcore mode)
+	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(2, nil))) // NOTE: set limit at 2/s (hardcore mode)
 	e.Use(middleware.CORSWithConfig(core.GetCORSConfig()))
 	e.Use(middleware.SecureWithConfig(core.GetSecureConfig()))
 	e.Use(middleware.BodyLimit("3M"))

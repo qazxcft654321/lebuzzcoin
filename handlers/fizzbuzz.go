@@ -16,29 +16,31 @@ func (h *Handler) GetAPIVersion(c echo.Context) error {
 		return h.RespondJSONBadRequest()
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
+	return c.JSON(http.StatusOK, map[string]string{
 		"status":  RESPONSE_STATUS_SUCCESS,
 		"message": "Lebuzzcoin-API v" + APIVersion,
 	})
 }
 
+// TODO: make test
+// TODO: all nums are uint32 so range = 0 > 2^32
 func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	fizzbuzz := &models.Fizzbuzz{}
-
-	// Decoding request body
 	if err := c.Bind(fizzbuzz); err != nil {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding request body")
 		return h.RespondJSONBadRequest()
 	}
 
-	// Struct validation
 	if err := h.validator.Struct(fizzbuzz); err != nil {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Data validation failed")
 		return h.RespondJSONForbidden()
 	}
 
+	hash := fizzbuzz.HashData()
+	// TODO: cache strategy??
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": RESPONSE_STATUS_SUCCESS,
-		"data":   fizzbuzz,
+		"data":   hash,
 	})
 }
