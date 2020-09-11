@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -62,9 +61,6 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 
 	// Building new result
 	if result.Hash != hash {
-		// DEBUG
-		fmt.Println("BUILDING", result)
-
 		result.Hash = hash
 		result.Fizzbuzz = fizzbuzz
 		// TODO: process calc
