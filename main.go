@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -10,7 +9,7 @@ import (
 	"lebuzzcoin/middlewares"
 
 	"github.com/didip/tollbooth"
-	"github.com/go-redis/redis/v8"
+	"github.com/go-redis/redis"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -36,7 +35,7 @@ func main() {
 		Password: os.Getenv("REDIS_PASSWORD"),
 		DB:       0,
 	})
-	_, err = rdb.Ping(context.Background()).Result()
+	_, err = rdb.Ping().Result()
 	if err != nil {
 		e.Logger.Fatalf("Cannot ping: %v \n", err)
 	}

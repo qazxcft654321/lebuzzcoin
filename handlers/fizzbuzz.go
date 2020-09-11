@@ -1,14 +1,13 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"os"
 
 	"lebuzzcoin/models"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/go-redis/redis"
 	"github.com/labstack/echo/v4"
 )
 
@@ -41,13 +40,13 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	hash := fizzbuzz.HashData()
 
 	// Retrive from cache
-	ctx := context.Background()
-	cache, err := h.rdb.Get(ctx, hash).Result()
+	cache, err := h.rdb.Get(hash).Result()
 	if err != nil && err != redis.Nil {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
 		return h.RespondJSONBadRequest()
 	}
 
+	// TODO: abstract redis to avoid dependencies
 	// Building result from cache
 	result := &models.Result{}
 	if len(cache) > 1 {
@@ -71,7 +70,7 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 			return h.RespondJSONBadRequest()
 		}
 
-		err = h.rdb.Set(ctx, hash, json, 0).Err()
+		err = h.rdb.Set(hash, json, 0).Err()
 		if err != nil {
 			h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching data")
 			return h.RespondJSONBadRequest()
