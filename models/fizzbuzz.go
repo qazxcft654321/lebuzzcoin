@@ -15,9 +15,10 @@ type Fizzbuzz struct {
 }
 
 type Result struct {
-	Hash     string
-	Fizzbuzz *Fizzbuzz
-	Result   []string
+	Hash      string    `json:"hash"`
+	Fizzbuzz  *Fizzbuzz `json:"fizzbuzz"`
+	Result    []string  `json:"result"`
+	State string      `json:"state"`
 }
 
 func (fb *Fizzbuzz) HashData() string {

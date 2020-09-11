@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -40,22 +41,30 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 
 	hash := fizzbuzz.HashData()
 
-	// TODO: refact !
+	// Retrive from cache
 	ctx := context.Background()
-	val, err := h.rdb.Get(ctx, hash).Result()
+	cache, err := h.rdb.Get(ctx, hash).Result()
 	if err != nil && err != redis.Nil {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
 		return h.RespondJSONBadRequest()
 	}
 
+	// Building result from cache
 	result := &models.Result{}
-	if len(val) > 1 {
-		err := json.Unmarshal([]byte(val), result)
+	if len(cache) > 1 {
+		err := json.Unmarshal([]byte(cache), result)
 		if err != nil {
 			h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
 			return h.RespondJSONBadRequest()
 		}
-	} else {
+		result.State = "cached"
+	}
+
+	// Building new result
+	if result.Hash != hash {
+		// DEBUG
+		fmt.Println("BUILDING", result)
+
 		result.Hash = hash
 		result.Fizzbuzz = fizzbuzz
 		// TODO: process calc
@@ -66,12 +75,12 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 			return h.RespondJSONBadRequest()
 		}
 
-		// TODO: cache time limit
 		err = h.rdb.Set(ctx, hash, json, 0).Err()
 		if err != nil {
 			h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching data")
 			return h.RespondJSONBadRequest()
 		}
+		result.State = "built"
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
