@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
@@ -27,19 +28,18 @@ func TestLogErrorMessage(t *testing.T) {
 	logger.SetHeader("time=${time_rfc3339}, level=${level}, message=${message}")
 
 	h := &Handler{logger: logger}
-	h.LogErrorMessage("test message", "test ressource", errors.New("test error"))
+	h.LogErrorMessage("test ressource", errors.New("test error"), "test message")
 
-	message := bytes.ContainsAny(buffer.Bytes(), "test message")
 	ressource := bytes.ContainsAny(buffer.Bytes(), "test ressource")
 	error := bytes.ContainsAny(buffer.Bytes(), "test error")
+	message := bytes.ContainsAny(buffer.Bytes(), "test message")
 
-	assert.True(t, message)
 	assert.True(t, ressource)
 	assert.True(t, error)
+	assert.True(t, message)
 }
 
 func TestRespondJSONBadRequest(t *testing.T) {
-	expected := 400
 	e := echo.New()
 	fakeHTTPHandler := func(c echo.Context) error {
 		h := &Handler{}
@@ -51,5 +51,20 @@ func TestRespondJSONBadRequest(t *testing.T) {
 	e.GET("/test", fakeHTTPHandler)
 	e.ServeHTTP(w, req)
 
-	assert.Equal(t, expected, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestRespondJSONForbidden(t *testing.T) {
+	e := echo.New()
+	fakeHTTPHandler := func(c echo.Context) error {
+		h := &Handler{}
+		return h.RespondJSONForbidden()
+	}
+
+	req := httptest.NewRequest("GET", "/test", nil)
+	w := httptest.NewRecorder()
+	e.GET("/test", fakeHTTPHandler)
+	e.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusForbidden, w.Code)
 }

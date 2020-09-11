@@ -7,17 +7,20 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 const (
-	RESPONSE_STATUS_ERROR              string = "error"
-	RESPONSE_STATUS_SUCCESS            string = "success"
-	RESPONSE_MESSAGE_BAD_REQUEST       string = "Server cannot process the request"
-	RESPONSE_MESSAGE_RESSOURCE_CREATED string = "Ressource created"
+	RESPONSE_STATUS_ERROR        string = "error"
+	RESPONSE_STATUS_FAIL         string = "fail"
+	RESPONSE_STATUS_SUCCESS      string = "success"
+	RESPONSE_MESSAGE_BAD_REQUEST string = "Server cannot process the request"
+	RESPONSE_MESSAGE_FORBIDDEN   string = "Invalid request"
 )
 
 type Handler struct {
-	logger echo.Logger
+	logger    echo.Logger
+	validator *validator.Validate
 }
 
 func New(logOutput io.Writer) *Handler {
@@ -26,10 +29,13 @@ func New(logOutput io.Writer) *Handler {
 	logger.SetLevel(log.INFO)
 	logger.SetHeader("time=${time_rfc3339}, level=${level}, message=${message}")
 
-	return &Handler{logger: logger}
+	return &Handler{
+		logger:    logger,
+		validator: validator.New(),
+	}
 }
 
-func (h *Handler) LogErrorMessage(message, ressource string, err error) {
+func (h *Handler) LogErrorMessage(ressource string, err error, message string) {
 	pc, _, line, _ := runtime.Caller(1)
 	funcName := runtime.FuncForPC(pc).Name()
 
@@ -52,5 +58,12 @@ func (h *Handler) RespondJSONBadRequest() error {
 	return echo.NewHTTPError(http.StatusBadRequest, map[string]string{
 		"status":  RESPONSE_STATUS_ERROR,
 		"message": RESPONSE_MESSAGE_BAD_REQUEST,
+	})
+}
+
+func (h *Handler) RespondJSONForbidden() error {
+	return echo.NewHTTPError(http.StatusForbidden, map[string]string{
+		"status":  RESPONSE_STATUS_FAIL,
+		"message": RESPONSE_MESSAGE_FORBIDDEN,
 	})
 }

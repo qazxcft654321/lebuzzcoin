@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
 	"lebuzzcoin/core"
@@ -31,7 +30,7 @@ func main() {
 
 	// Setup some middlewares at router level
 	e.Use(middleware.LoggerWithConfig(core.GetLoggerConfig()))
-	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(1, nil))) // NOTE: set limit at 3/s
+	e.Use(middlewares.LimitMiddleware(tollbooth.NewLimiter(1, nil))) // NOTE: set limit at 1/s (hardcore mode)
 	e.Use(middleware.CORSWithConfig(core.GetCORSConfig()))
 	e.Use(middleware.SecureWithConfig(core.GetSecureConfig()))
 	e.Use(middleware.BodyLimit("3M"))
@@ -42,14 +41,10 @@ func main() {
 	// Setup handler struct
 	h := handlers.New(os.Stdout)
 
-	// TODO: move to handler
+	// routes
 	e.GET("/", h.GetAPIVersion)
-	v1.POST("/fizzbuzz", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]interface{}{
-			"status":  "success",
-			"message": "...",
-		})
-	})
+	v1.POST("/fizzbuzz/compute", h.ComputeFizzbuzz) // NOTE: due to many parameters I am going for POST (dont't like overstuffing URLs)
 
+	// server
 	e.Logger.Fatal(e.StartTLS(":"+os.Getenv("HTTP_PORT"), os.Getenv("CERT_PEM"), os.Getenv("KEY_PEM")))
 }

@@ -16,6 +16,9 @@ format: ## Format the files
 test: ## Run tests
 	@go test -v $(PKG_LIST)
 
+cover: ## Run tests coverage
+	@go test -cover $(PKG_LIST)
+
 loc: ## Print LOC of all .go files
 	@find . -name '*.go' | xargs wc -l
 
