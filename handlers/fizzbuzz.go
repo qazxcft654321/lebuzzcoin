@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"os"
 
+	dbCache "lebuzzcoin/core/cache"
 	"lebuzzcoin/models"
 
-	"github.com/go-redis/redis"
 	"github.com/labstack/echo/v4"
 )
+
+const SortedSetKey string = "computeScore"
 
 func (h *Handler) GetAPIVersion(c echo.Context) error {
 	APIVersion := os.Getenv("APIVERSION")
@@ -41,7 +43,7 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 
 	// Retrive from cache
 	cache, err := h.cache.Get(hash)
-	if err != nil && err != redis.Nil {
+	if err != nil && err.Error() != dbCache.Empty {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
 		return h.RespondJSONBadRequest()
 	}
@@ -95,7 +97,7 @@ func (h *Handler) GetFizzbuzzFromHash(c echo.Context) error {
 
 	// Retrive from cache
 	cache, err := h.cache.Get(hash)
-	if err != nil || err == redis.Nil {
+	if err != nil || err.Error() == dbCache.Empty {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
 		return h.RespondJSONBadRequest()
 	}
