@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 	"os"
@@ -84,9 +85,10 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 
 func (h *Handler) GetFizzbuzzFromHash(c echo.Context) error {
 	hash := c.Param("hash")
-	// TODO: switch to validator with hexa only?
-	// TODO: hex.DecodeString() check if []byte is 256/32 long
-	if len(hash) != 64 {
+	buffer, err := hex.DecodeString(hash)
+
+	// Check if hex & 256bits / 32Bytes long
+	if err != nil || len(buffer) != 32 {
 		h.LogErrorMessage("handlers.fizzbuzz", nil, "Submited hash incorrect")
 		return h.RespondJSONForbidden()
 	}

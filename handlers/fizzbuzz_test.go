@@ -177,7 +177,7 @@ func TestGetFizzbuzzFromHash(t *testing.T) {
 		expected int
 	}{
 		"case1": {
-			hash:     "qwert123",
+			hash:     "qwert+=123",
 			data:     nil,
 			cache:    false,
 			expected: http.StatusForbidden,
