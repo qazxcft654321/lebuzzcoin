@@ -14,6 +14,7 @@ type Store interface {
 	Set(key string, value interface{}, exp time.Duration) error
 	Get(key string) (string, error)
 	ZAdd(key string, member *ZMember) (int64, error)
+	ZIncr(key string, member *ZMember) (float64, error)
 }
 
 type Client struct {
@@ -60,5 +61,11 @@ func (c *Client) Get(key string) (string, error) {
 func (c *Client) ZAdd(key string, member *ZMember) (int64, error) {
 	ctx := context.Background()
 	count, err := c.client.ZAdd(ctx, key, &redis.Z{Score: member.Score, Member: member.Member}).Result()
+	return count, err
+}
+
+func (c *Client) ZIncr(key string, member *ZMember) (float64, error) {
+	ctx := context.Background()
+	count, err := c.client.ZIncr(ctx, key, &redis.Z{Score: member.Score, Member: member.Member}).Result()
 	return count, err
 }

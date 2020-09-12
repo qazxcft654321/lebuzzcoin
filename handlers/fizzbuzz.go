@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -57,6 +58,15 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 			return h.RespondJSONBadRequest()
 		}
 		result.Flag = "cached"
+
+		// TODO: extract
+		// Increment sorted set member
+		go func() {
+			test, err := h.cache.ZIncr(SortedSetKey, &dbCache.ZMember{Score: 1, Member: hash})
+			if err != nil {
+				h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching sorted set")
+			}
+		}()
 	}
 
 	// Building new result
@@ -77,6 +87,15 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 			return h.RespondJSONBadRequest()
 		}
 		result.Flag = "built"
+
+		// TODO: extract
+		// Add member to sorted set
+		go func() {
+			test, err := h.cache.ZAdd(SortedSetKey, &dbCache.ZMember{Score: 1, Member: hash})
+			if err != nil {
+				h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching sorted set")
+			}
+		}()
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
