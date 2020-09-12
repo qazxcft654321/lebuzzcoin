@@ -14,7 +14,7 @@ import (
 
 const (
 	RESPONSE_STATUS_ERROR        string = "error"
-	RESPONSE_STATUS_FAIL         string = "fail"
+	RESPONSE_STATUS_FAIL         string = "forbidden"
 	RESPONSE_STATUS_SUCCESS      string = "success"
 	RESPONSE_MESSAGE_BAD_REQUEST string = "Server cannot process the request"
 	RESPONSE_MESSAGE_FORBIDDEN   string = "Invalid request"

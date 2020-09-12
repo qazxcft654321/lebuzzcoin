@@ -55,13 +55,12 @@ func TestGetAPIVersionHandler(t *testing.T) {
 func TestComputeFizzbuzz(t *testing.T) {
 	tests := map[string]struct {
 		fizzbuzz *models.Fizzbuzz
-		result   models.Result
+		response string
 		expected int
 		repeat   bool
 	}{
 		"case1": {
 			fizzbuzz: &models.Fizzbuzz{},
-			result:   models.Result{},
 			expected: http.StatusForbidden,
 			repeat:   false,
 		},
@@ -71,7 +70,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ModA:     4,
 				ReplaceA: "less than 20Bytes",
 			},
-			result:   models.Result{},
 			expected: http.StatusForbidden,
 			repeat:   false,
 		},
@@ -81,7 +79,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ModA:     32768,
 				ReplaceA: "less than 20Bytes",
 			},
-			result:   models.Result{},
 			expected: http.StatusForbidden,
 			repeat:   false,
 		},
@@ -91,7 +88,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ModA:     10,
 				ReplaceA: "lets write something incorrect longer than 20 bytes",
 			},
-			result:   models.Result{},
 			expected: http.StatusForbidden,
 			repeat:   false,
 		},
@@ -104,7 +100,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceA: "less than 20Bytes",
 				ReplaceB: "less than 20Bytes",
 			},
-			result:   models.Result{},
 			expected: http.StatusForbidden,
 			repeat:   false,
 		},
@@ -117,7 +112,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceA: "less than 20Bytes",
 				ReplaceB: "lets write something incorrect longer than 20 bytes",
 			},
-			result:   models.Result{},
 			expected: http.StatusForbidden,
 			repeat:   false,
 		},
@@ -130,7 +124,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceA: "lets write something incorrect longer than 20 bytes",
 				ReplaceB: "lets write something incorrect longer than 20 bytes",
 			},
-			result:   models.Result{},
 			expected: http.StatusForbidden,
 			repeat:   false,
 		},
@@ -140,10 +133,10 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ModA:     2,
 				ModB:     3,
 				Limit:    1000,
-				ReplaceA: "fizz",
-				ReplaceB: "buzz",
+				ReplaceA: "testA",
+				ReplaceB: "testB",
 			},
-			result:   models.Result{},
+			response: "{\"data\":{\"hash\":\"d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476\",\"fizzbuzz\":{\"mod_a\":2,\"mod_b\":3,\"limit\":1000,\"replace_a\":\"testA\",\"replace_b\":\"testB\"},\"result\":null,\"state\":\"built\"},\"status\":\"success\"}\n",
 			expected: http.StatusOK,
 			repeat:   false,
 		},
@@ -167,11 +160,78 @@ func TestComputeFizzbuzz(t *testing.T) {
 			e.POST("/test", h.ComputeFizzbuzz)
 			e.ServeHTTP(w, req)
 
-			result := models.Result{}
-			err = json.Unmarshal(w.Body.Bytes(), &result)
-			assert.NoError(t, err)
+			if len(tc.response) > 0 {
+				assert.EqualValues(t, tc.response, w.Body.String())
+			}
+			assert.Equal(t, tc.expected, w.Code)
+		})
+	}
+}
 
-			assert.EqualValues(t, tc.result, result)
+func TestGetFizzbuzzFromHash(t *testing.T) {
+	tests := map[string]struct {
+		hash     string
+		data     *models.Result
+		response string
+		cache    bool
+		expected int
+	}{
+		"case1": {
+			hash:     "qwert123",
+			data:     nil,
+			cache:    false,
+			expected: http.StatusForbidden,
+		},
+
+		"case2": {
+			hash:     "8c226d1fc7d66d45192f02eeefd85c0d99b729926c17c1632a32f53dbbd5657a",
+			data:     nil,
+			cache:    false,
+			expected: http.StatusBadRequest,
+		},
+
+		"case3": {
+			hash: "d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476",
+			data: &models.Result{
+				Hash: "d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476",
+				Fizzbuzz: &models.Fizzbuzz{
+					ModA:     2,
+					ModB:     3,
+					Limit:    1000,
+					ReplaceA: "testA",
+					ReplaceB: "testB",
+				},
+			},
+			response: "{\"data\":{\"hash\":\"d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476\",\"fizzbuzz\":{\"mod_a\":2,\"mod_b\":3,\"limit\":1000,\"replace_a\":\"testA\",\"replace_b\":\"testB\"},\"result\":null,\"state\":\"cached\"},\"status\":\"success\"}\n",
+			cache:    true,
+			expected: http.StatusOK,
+		},
+	}
+
+	cache, err := cache.NewTestCache()
+	assert.NoError(t, err)
+
+	h := New(ioutil.Discard, cache)
+	e := echo.New()
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			if tc.cache {
+				json, err := json.Marshal(tc.data)
+				assert.NoError(t, err)
+
+				err = cache.Set(tc.hash, json, 0)
+				assert.NoError(t, err)
+			}
+
+			req := httptest.NewRequest("GET", "/test/"+tc.hash, nil)
+			w := httptest.NewRecorder()
+			e.GET("/test/:hash", h.GetFizzbuzzFromHash)
+			e.ServeHTTP(w, req)
+
+			if len(tc.response) > 0 {
+				assert.EqualValues(t, tc.response, w.Body.String())
+			}
 			assert.Equal(t, tc.expected, w.Code)
 		})
 	}

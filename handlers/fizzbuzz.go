@@ -53,7 +53,7 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 			h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
 			return h.RespondJSONBadRequest()
 		}
-		result.State = "cached"
+		result.Flag = "cached"
 	}
 
 	// Building new result
@@ -73,7 +73,40 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 			h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching data")
 			return h.RespondJSONBadRequest()
 		}
-		result.State = "built"
+		result.Flag = "built"
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": RESPONSE_STATUS_SUCCESS,
+		"data":   result,
+	})
+}
+
+func (h *Handler) GetFizzbuzzFromHash(c echo.Context) error {
+	hash := c.Param("hash")
+	// TODO: switch to validator with hexa only?
+	// TODO: hex.DecodeString() check if []byte is 256/32 long
+	if len(hash) != 64 {
+		h.LogErrorMessage("handlers.fizzbuzz", nil, "Submited hash incorrect")
+		return h.RespondJSONForbidden()
+	}
+
+	// Retrive from cache
+	cache, err := h.cache.Get(hash)
+	if err != nil || err == redis.Nil {
+		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
+		return h.RespondJSONBadRequest()
+	}
+
+	// Building result from cache
+	result := &models.Result{}
+	if len(cache) > 1 {
+		err := json.Unmarshal([]byte(cache), result)
+		if err != nil {
+			h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
+			return h.RespondJSONBadRequest()
+		}
+		result.Flag = "cached"
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
