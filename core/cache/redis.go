@@ -1,15 +1,17 @@
 package cache
 
 import (
+	"context"
 	"time"
 
 	"github.com/alicebob/miniredis"
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 )
 
 type Store interface {
 	Set(key string, value interface{}, exp time.Duration) error
 	Get(key string) (string, error)
+	ZAdd(key string, member *ZMember) (int64, error)
 }
 
 type Client struct {
@@ -22,9 +24,15 @@ type Options struct {
 	DB       int
 }
 
+type ZMember struct {
+	Score  float64
+	Member interface{}
+}
+
 func NewCache(options Options) (*Client, error) {
 	client := redis.NewClient(&redis.Options{Addr: options.Address})
-	_, err := client.Ping().Result()
+	ctx := context.Background()
+	_, err := client.Ping(ctx).Result()
 
 	return &Client{client: client}, err
 }
@@ -37,9 +45,18 @@ func NewTestCache() (*Client, error) {
 }
 
 func (c *Client) Set(key string, value interface{}, exp time.Duration) error {
-	return c.client.Set(key, value, exp).Err()
+	ctx := context.Background()
+	return c.client.Set(ctx, key, value, exp).Err()
 }
+
 func (c *Client) Get(key string) (string, error) {
-	get, err := c.client.Get(key).Result()
+	ctx := context.Background()
+	get, err := c.client.Get(ctx, key).Result()
 	return get, err
+}
+
+func (c *Client) ZAdd(key string, member *ZMember) (int64, error) {
+	ctx := context.Background()
+	count, err := c.client.ZAdd(ctx, key, &redis.Z{Score: member.Score, Member: member.Member}).Result()
+	return count, err
 }
