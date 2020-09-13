@@ -57,12 +57,10 @@ func TestComputeFizzbuzz(t *testing.T) {
 		fizzbuzz *models.Fizzbuzz
 		response string
 		expected int
-		repeat   bool
 	}{
 		"case1": {
 			fizzbuzz: &models.Fizzbuzz{},
 			expected: http.StatusForbidden,
-			repeat:   false,
 		},
 
 		"case2": {
@@ -71,7 +69,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceA: "less than 20Bytes",
 			},
 			expected: http.StatusForbidden,
-			repeat:   false,
 		},
 
 		"case3": {
@@ -80,7 +77,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceA: "less than 20Bytes",
 			},
 			expected: http.StatusForbidden,
-			repeat:   false,
 		},
 
 		"case4": {
@@ -89,7 +85,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceA: "lets write something incorrect longer than 20 bytes",
 			},
 			expected: http.StatusForbidden,
-			repeat:   false,
 		},
 
 		"case5": {
@@ -101,7 +96,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceB: "less than 20Bytes",
 			},
 			expected: http.StatusForbidden,
-			repeat:   false,
 		},
 
 		"case6": {
@@ -113,7 +107,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceB: "lets write something incorrect longer than 20 bytes",
 			},
 			expected: http.StatusForbidden,
-			repeat:   false,
 		},
 
 		"case7": {
@@ -125,7 +118,6 @@ func TestComputeFizzbuzz(t *testing.T) {
 				ReplaceB: "lets write something incorrect longer than 20 bytes",
 			},
 			expected: http.StatusForbidden,
-			repeat:   false,
 		},
 
 		"case8": {
@@ -138,7 +130,17 @@ func TestComputeFizzbuzz(t *testing.T) {
 			},
 			response: "{\"data\":{\"hash\":\"dea6044b07f822744ab3de793dc4d9e5d0fd7c572e7c2c3e68fafe182551d110\",\"fizzbuzz\":{\"mod_a\":2,\"mod_b\":3,\"limit\":100,\"replace_a\":\"testA\",\"replace_b\":\"testB\"},\"result\":[\"1\",\"testA\",\"testB\",\"testA\",\"testAtestB\",\"testA\",\"7\",\"testA\",\"testB\",\"testAtestB\",\"11\",\"testA\",\"13\",\"testA\",\"testAtestB\",\"testA\",\"17\",\"testA\",\"19\",\"testAtestB\",\"testB\",\"testA\",\"23\",\"testA\",\"testAtestB\",\"testA\",\"testB\",\"testA\",\"29\",\"testAtestB\",\"31\",\"testA\",\"testB\",\"testA\",\"testAtestB\",\"testA\",\"37\",\"testA\",\"testB\",\"testAtestB\",\"41\",\"testA\",\"43\",\"testA\",\"testAtestB\",\"testA\",\"47\",\"testA\",\"49\",\"testAtestB\",\"testB\",\"testA\",\"53\",\"testA\",\"testAtestB\",\"testA\",\"testB\",\"testA\",\"59\",\"testAtestB\",\"61\",\"testA\",\"testB\",\"testA\",\"testAtestB\",\"testA\",\"67\",\"testA\",\"testB\",\"testAtestB\",\"71\",\"testA\",\"73\",\"testA\",\"testAtestB\",\"testA\",\"77\",\"testA\",\"79\",\"testAtestB\",\"testB\",\"testA\",\"83\",\"testA\",\"testAtestB\",\"testA\",\"testB\",\"testA\",\"89\",\"testAtestB\",\"91\",\"testA\",\"testB\",\"testA\",\"testAtestB\",\"testA\",\"97\",\"testA\",\"testB\"],\"state\":\"built\"},\"status\":\"success\"}\n",
 			expected: http.StatusOK,
-			repeat:   false,
+		},
+
+		"case9": {
+			fizzbuzz: &models.Fizzbuzz{
+				ModA:     0,
+				ModB:     0,
+				Limit:    100,
+				ReplaceA: "less than 20Bytes",
+				ReplaceB: "less than 20Bytes",
+			},
+			expected: http.StatusForbidden,
 		},
 	}
 

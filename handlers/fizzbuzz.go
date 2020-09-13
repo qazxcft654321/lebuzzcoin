@@ -27,7 +27,6 @@ func (h *Handler) GetAPIVersion(c echo.Context) error {
 	})
 }
 
-// TODO: Recheck int parameters limit range
 func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	fizzbuzz := &models.Fizzbuzz{}
 	if err := c.Bind(fizzbuzz); err != nil {
@@ -72,7 +71,8 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	if result.Hash != hash {
 		result.Hash = hash
 		result.Fizzbuzz = fizzbuzz
-		err = result.ComputeResult()
+
+		err := result.ComputeResult()
 		if err != nil {
 			h.LogErrorMessage("handlers.fizzbuzz", err, "Error computing fizzbuzz result")
 			return h.RespondJSONBadRequest()
@@ -141,7 +141,7 @@ func (h *Handler) GetFizzbuzzFromHash(c echo.Context) error {
 }
 
 func (h *Handler) GetComputeByDescHitScore(c echo.Context) error {
-	members, err := h.cache.ZRevRangeWithScores(SortedSetKey, 0, 3)
+	members, err := h.cache.ZRevRangeWithScores(SortedSetKey, 0, 2)
 	if err != nil {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
 		return h.RespondJSONBadRequest()

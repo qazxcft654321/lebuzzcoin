@@ -7,7 +7,6 @@ import (
 	"strconv"
 )
 
-// TODO: all nums are uint32 so range = 0 > 2^32 | max = (str 20B * limit 1000) < 512B redis max entry
 type Fizzbuzz struct {
 	ModA     uint16 `json:"mod_a" validate:"required,numeric,min=1,max=1000"` // range 1 to 1000
 	ModB     uint16 `json:"mod_b" validate:"required,numeric,min=1,max=1000"` // range 1 to 1000
