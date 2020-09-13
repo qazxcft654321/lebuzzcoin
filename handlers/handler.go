@@ -13,13 +13,11 @@ import (
 )
 
 const (
-	RESPONSE_STATUS_NO_CONTENT   string = "no content"
 	RESPONSE_STATUS_ERROR        string = "error"
 	RESPONSE_STATUS_FORBIDDEN    string = "forbidden"
 	RESPONSE_STATUS_SUCCESS      string = "success"
 	RESPONSE_MESSAGE_BAD_REQUEST string = "Server cannot process the request"
 	RESPONSE_MESSAGE_FORBIDDEN   string = "Invalid request"
-	RESPONSE_MESSAGE_NO_CONTENT  string = "Ressource seems to be empty"
 )
 
 type Handler struct {
@@ -71,12 +69,5 @@ func (h *Handler) RespondJSONForbidden() error {
 	return echo.NewHTTPError(http.StatusForbidden, map[string]string{
 		"status":  RESPONSE_STATUS_FORBIDDEN,
 		"message": RESPONSE_MESSAGE_FORBIDDEN,
-	})
-}
-
-func (h *Handler) RespondJSONNoContent() error {
-	return echo.NewHTTPError(http.StatusNoContent, map[string]string{
-		"status":  RESPONSE_STATUS_NO_CONTENT,
-		"message": RESPONSE_MESSAGE_NO_CONTENT,
 	})
 }

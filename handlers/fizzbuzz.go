@@ -142,10 +142,6 @@ func (h *Handler) GetComputeByDescHitScore(c echo.Context) error {
 		return h.RespondJSONBadRequest()
 	}
 
-	if len(members) < 1 {
-		return h.RespondJSONNoContent()
-	}
-
 	type Stats struct {
 		Hits   float64
 		Result *models.Result
@@ -153,23 +149,25 @@ func (h *Handler) GetComputeByDescHitScore(c echo.Context) error {
 
 	// Retrieve from cache
 	stats := make([]Stats, 0, len(members))
-	for _, v := range members {
-		if v.Member != nil {
-			cache, err := h.cache.Get(v.Member.(string))
-			if err != nil {
-				h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
-				return h.RespondJSONBadRequest()
-			}
+	if len(members) > 0 {
+		for _, v := range members {
+			if v.Member != nil {
+				cache, err := h.cache.Get(v.Member.(string))
+				if err != nil {
+					h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
+					return h.RespondJSONBadRequest()
+				}
 
-			result := &models.Result{}
-			err = json.Unmarshal([]byte(cache), result)
-			if err != nil {
-				h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
-				return h.RespondJSONBadRequest()
-			}
-			result.Flag = "cached"
+				result := &models.Result{}
+				err = json.Unmarshal([]byte(cache), result)
+				if err != nil {
+					h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
+					return h.RespondJSONBadRequest()
+				}
+				result.Flag = "cached"
 
-			stats = append(stats, Stats{Hits: v.Score, Result: result})
+				stats = append(stats, Stats{Hits: v.Score, Result: result})
+			}
 		}
 	}
 
