@@ -38,11 +38,47 @@ func TestCacheGet(t *testing.T) {
 	assert.IsType(t, "", val)
 }
 
-func TestCacheZadd(t *testing.T) {
+func TestCacheZAdd(t *testing.T) {
 	cache, err := NewTestCache()
 	assert.NoError(t, err)
 
 	count, err := cache.ZAdd("testSet", &ZMember{Score: 1, Member: "testValue"})
 	assert.NoError(t, err)
 	assert.Equal(t, int64(1), count)
+}
+
+func TestCacheZIncr(t *testing.T) {
+	cache, err := NewTestCache()
+	assert.NoError(t, err)
+
+	_, err = cache.ZAdd("testSet", &ZMember{Score: 1, Member: "testValue"})
+	assert.NoError(t, err)
+
+	max := 5
+	score := float64(0)
+	for i := 0; i < max; i++ {
+		score, err = cache.ZIncr("testSet", &ZMember{Score: 1, Member: "testValue"})
+		assert.NoError(t, err)
+	}
+
+	assert.Equal(t, float64(max)+1, score)
+}
+
+func ZRevRangeWithScores(t *testing.T) {
+	cache, err := NewTestCache()
+	assert.NoError(t, err)
+
+	_, err = cache.ZAdd("testSet", &ZMember{Score: 1, Member: "testValue1"})
+	assert.NoError(t, err)
+	_, err = cache.ZAdd("testSet", &ZMember{Score: 1, Member: "testValue2"})
+	assert.NoError(t, err)
+	_, err = cache.ZAdd("testSet", &ZMember{Score: 1, Member: "testValue3"})
+	assert.NoError(t, err)
+	_, err = cache.ZAdd("testSet", &ZMember{Score: 1, Member: "testValue4"})
+	assert.NoError(t, err)
+
+	start, stop := int64(0), int64(3)
+	members, err := cache.ZRevRangeWithScores("testSet", start, stop)
+	assert.NoError(t, err)
+	assert.Equal(t, 3, len(members))
 }

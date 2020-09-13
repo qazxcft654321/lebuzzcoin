@@ -151,23 +151,21 @@ func (h *Handler) GetComputeByDescHitScore(c echo.Context) error {
 	stats := make([]Stats, 0, len(members))
 	if len(members) > 0 {
 		for _, v := range members {
-			if v.Member != nil {
-				cache, err := h.cache.Get(v.Member.(string))
-				if err != nil {
-					h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
-					return h.RespondJSONBadRequest()
-				}
-
-				result := &models.Result{}
-				err = json.Unmarshal([]byte(cache), result)
-				if err != nil {
-					h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
-					return h.RespondJSONBadRequest()
-				}
-				result.Flag = "cached"
-
-				stats = append(stats, Stats{Hits: v.Score, Result: result})
+			cache, err := h.cache.Get(v.Member.(string))
+			if err != nil {
+				h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
+				return h.RespondJSONBadRequest()
 			}
+
+			result := &models.Result{}
+			err = json.Unmarshal([]byte(cache), result)
+			if err != nil {
+				h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
+				return h.RespondJSONBadRequest()
+			}
+			result.Flag = "cached"
+
+			stats = append(stats, Stats{Hits: v.Score, Result: result})
 		}
 	}
 

@@ -71,9 +71,11 @@ func (c *Client) ZIncr(key string, member *ZMember) (float64, error) {
 func (c *Client) ZRevRangeWithScores(key string, start, stop int64) ([]ZMember, error) {
 	ctx := context.Background()
 	members, err := c.client.ZRevRangeWithScores(ctx, key, start, stop).Result()
-	res := make([]ZMember, len(members))
+	res := make([]ZMember, 0, len(members))
 	for _, v := range members {
-		res = append(res, ZMember{Score: v.Score, Member: v.Member})
+		if v.Member != nil {
+			res = append(res, ZMember{Score: v.Score, Member: v.Member})
+		}
 	}
 
 	return res, err
