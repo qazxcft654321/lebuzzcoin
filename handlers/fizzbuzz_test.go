@@ -236,3 +236,96 @@ func TestGetFizzbuzzFromHash(t *testing.T) {
 		})
 	}
 }
+
+func TestGetComputeByDescHitScore(t *testing.T) {
+	tests := map[string]struct {
+		data      []*models.Result
+		response  string
+		sortedSet bool
+		expected  int
+	}{
+		"case1": {
+			response: "{\"data\":[],\"status\":\"success\"}\n",
+			expected: http.StatusOK,
+		},
+
+		"case2": {
+			data: []*models.Result{
+				&models.Result{
+					Hash: "d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476",
+					Fizzbuzz: &models.Fizzbuzz{
+						ModA:     2,
+						ModB:     3,
+						Limit:    1000,
+						ReplaceA: "testA",
+						ReplaceB: "testB",
+					},
+				},
+				&models.Result{
+					Hash: "8e7a9c5cf786f6b80e6f1708b44b8d4fc298761711112ba8009484938fb05c2a",
+					Fizzbuzz: &models.Fizzbuzz{
+						ModA:     2,
+						ModB:     4,
+						Limit:    1000,
+						ReplaceA: "testA",
+						ReplaceB: "testB",
+					},
+				},
+				&models.Result{
+					Hash: "8c226d1fc7d66d45192f02eeefd85c0d99b729926c17c1632a32f53dbbd5657a",
+					Fizzbuzz: &models.Fizzbuzz{
+						ModA:     2,
+						ModB:     5,
+						Limit:    1000,
+						ReplaceA: "testA",
+						ReplaceB: "testB",
+					},
+				},
+			},
+			response:  "{\"data\":[{\"Hits\":3,\"Result\":{\"hash\":\"8c226d1fc7d66d45192f02eeefd85c0d99b729926c17c1632a32f53dbbd5657a\",\"fizzbuzz\":{\"mod_a\":2,\"mod_b\":5,\"limit\":1000,\"replace_a\":\"testA\",\"replace_b\":\"testB\"},\"result\":null,\"state\":\"cached\"}},{\"Hits\":2,\"Result\":{\"hash\":\"8e7a9c5cf786f6b80e6f1708b44b8d4fc298761711112ba8009484938fb05c2a\",\"fizzbuzz\":{\"mod_a\":2,\"mod_b\":4,\"limit\":1000,\"replace_a\":\"testA\",\"replace_b\":\"testB\"},\"result\":null,\"state\":\"cached\"}},{\"Hits\":1,\"Result\":{\"hash\":\"d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476\",\"fizzbuzz\":{\"mod_a\":2,\"mod_b\":3,\"limit\":1000,\"replace_a\":\"testA\",\"replace_b\":\"testB\"},\"result\":null,\"state\":\"cached\"}}],\"status\":\"success\"}\n",
+			sortedSet: true,
+			expected:  http.StatusOK,
+		},
+	}
+
+	cacheClient, err := cache.NewTestCache()
+	assert.NoError(t, err)
+
+	h := New(ioutil.Discard, cacheClient)
+	e := echo.New()
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			// cache data
+			if len(tc.data) > 0 {
+				for _, v := range tc.data {
+					json, err := json.Marshal(v)
+					assert.NoError(t, err)
+
+					err = h.cache.Set(v.Hash, json, 0)
+					assert.NoError(t, err)
+				}
+			}
+
+			// sorted set
+			if tc.sortedSet {
+				for i := 0; i < len(tc.data); i++ {
+					_, err := h.cache.ZAdd(SortedSetKey, &cache.ZMember{
+						Score:  float64(i + 1),
+						Member: tc.data[i].Hash,
+					})
+					assert.NoError(t, err)
+				}
+			}
+
+			// http req
+			req := httptest.NewRequest("GET", "/test", nil)
+			w := httptest.NewRecorder()
+			e.GET("/test", h.GetComputeByDescHitScore)
+			e.ServeHTTP(w, req)
+
+			assert.EqualValues(t, tc.response, w.Body.String())
+			assert.Equal(t, tc.expected, w.Code)
+		})
+	}
+}

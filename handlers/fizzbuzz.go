@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	dbCache "lebuzzcoin/core/cache"
+	"lebuzzcoin/core/cache"
 	"lebuzzcoin/models"
 
 	"github.com/labstack/echo/v4"
@@ -27,6 +27,7 @@ func (h *Handler) GetAPIVersion(c echo.Context) error {
 	})
 }
 
+// TODO: Recheck int parameters limit range
 func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	fizzbuzz := &models.Fizzbuzz{}
 	if err := c.Bind(fizzbuzz); err != nil {
@@ -42,16 +43,16 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	hash := fizzbuzz.HashData()
 
 	// Retrieve from cache
-	cache, err := h.cache.Get(hash)
-	if err != nil && err.Error() != dbCache.Empty {
+	data, err := h.cache.Get(hash)
+	if err != nil && err.Error() != cache.Empty {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
 		return h.RespondJSONBadRequest()
 	}
 
 	// Building result from cache
 	result := &models.Result{}
-	if len(cache) > 1 {
-		err := json.Unmarshal([]byte(cache), result)
+	if len(data) > 1 {
+		err := json.Unmarshal([]byte(data), result)
 		if err != nil {
 			h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
 			return h.RespondJSONBadRequest()
@@ -60,7 +61,7 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 
 		// Increment sorted set member
 		go func() {
-			_, err := h.cache.ZIncr(SortedSetKey, &dbCache.ZMember{Score: 1, Member: hash})
+			_, err := h.cache.ZIncr(SortedSetKey, &cache.ZMember{Score: 1, Member: hash})
 			if err != nil {
 				h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching sorted set")
 			}
@@ -88,7 +89,7 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 
 		// Add member to sorted set
 		go func() {
-			_, err := h.cache.ZAdd(SortedSetKey, &dbCache.ZMember{Score: 1, Member: hash})
+			_, err := h.cache.ZAdd(SortedSetKey, &cache.ZMember{Score: 1, Member: hash})
 			if err != nil {
 				h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching sorted set")
 			}
@@ -135,6 +136,7 @@ func (h *Handler) GetFizzbuzzFromHash(c echo.Context) error {
 	})
 }
 
+// TODO: make test
 func (h *Handler) GetComputeByDescHitScore(c echo.Context) error {
 	members, err := h.cache.ZRevRangeWithScores(SortedSetKey, 0, 3)
 	if err != nil {
