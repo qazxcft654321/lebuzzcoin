@@ -3,15 +3,16 @@ package models
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"strconv"
 )
 
 // TODO: all nums are uint32 so range = 0 > 2^32 | max = (str 20B * limit 1000) < 512B redis max entry
 type Fizzbuzz struct {
-	ModA     uint16 `json:"mod_a" validate:"required,numeric,max=10000"`
-	ModB     uint16 `json:"mod_b" validate:"required,numeric,max=10000"`
-	Limit    uint16 `json:"limit" validate:"required,numeric,max=10000"`
-	ReplaceA string `json:"replace_a" validate:"required,alphanum,max=20"`
-	ReplaceB string `json:"replace_b" validate:"required,alphanum"`
+	ModA     uint16 `json:"mod_a" validate:"required,numeric,min=1,max=1000"` // range 1 to 1000
+	ModB     uint16 `json:"mod_b" validate:"required,numeric,min=1,max=1000"` // range 1 to 1000
+	Limit    uint16 `json:"limit" validate:"required,numeric,min=1,max=1000"` // range 1 to 1000
+	ReplaceA string `json:"replace_a" validate:"required,alphanum,max=20"`    // max 20Bytes long
+	ReplaceB string `json:"replace_b" validate:"required,alphanum,max=20"`    // max 20Bytes long
 }
 
 type Result struct {
@@ -28,4 +29,25 @@ func (fb *Fizzbuzz) HashData() string {
 	hashed := hash.Sum(nil)
 
 	return hex.EncodeToString(hashed)
+}
+
+func (r *Result) ComputeResult() error {
+	chain := []string{}
+	var i uint16
+	for i = 1; i < r.Fizzbuzz.Limit; i++ {
+		if i%(r.Fizzbuzz.ModA+r.Fizzbuzz.ModB) == 0 {
+			chain = append(chain, r.Fizzbuzz.ReplaceA+r.Fizzbuzz.ReplaceB)
+		} else if i%r.Fizzbuzz.ModA == 0 {
+			chain = append(chain, r.Fizzbuzz.ReplaceA)
+		} else if i%r.Fizzbuzz.ModB == 0 {
+			chain = append(chain, r.Fizzbuzz.ReplaceB)
+		} else {
+			chain = append(chain, strconv.Itoa(int(i)))
+		}
+	}
+
+	r.Result = chain
+
+	// TODO: do we really need error management here? edge cases?
+	return nil
 }

@@ -296,6 +296,8 @@ func TestGetComputeByDescHitScore(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
+			err := cacheClient.FlushAll()
+			assert.NoError(t, err)
 			// cache data
 			if len(tc.data) > 0 {
 				for _, v := range tc.data {

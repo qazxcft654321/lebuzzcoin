@@ -136,7 +136,6 @@ func (h *Handler) GetFizzbuzzFromHash(c echo.Context) error {
 	})
 }
 
-// TODO: make test
 func (h *Handler) GetComputeByDescHitScore(c echo.Context) error {
 	members, err := h.cache.ZRevRangeWithScores(SortedSetKey, 0, 3)
 	if err != nil {

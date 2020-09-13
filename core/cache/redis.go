@@ -16,6 +16,7 @@ type Store interface {
 	ZAdd(key string, member *ZMember) (int64, error)
 	ZIncr(key string, member *ZMember) (float64, error)
 	ZRevRangeWithScores(key string, start, stop int64) ([]ZMember, error)
+	FlushAll(ctx context.Context) error
 }
 
 type Client struct {
@@ -79,4 +80,9 @@ func (c *Client) ZRevRangeWithScores(key string, start, stop int64) ([]ZMember, 
 	}
 
 	return res, err
+}
+
+func (c *Client) FlushAll() error {
+	ctx := context.Background()
+	return c.client.FlushAll(ctx).Err()
 }
