@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"strconv"
 )
 
@@ -32,6 +33,10 @@ func (fb *Fizzbuzz) HashData() string {
 }
 
 func (r *Result) ComputeResult() error {
+	if r.Fizzbuzz.ModA == 0 || r.Fizzbuzz.ModB == 0 || r.Fizzbuzz.Limit == 0 {
+		return errors.New("Cannot modulo by 0")
+	}
+
 	chain := []string{}
 	var i uint16
 	for i = 1; i < r.Fizzbuzz.Limit; i++ {
@@ -47,7 +52,5 @@ func (r *Result) ComputeResult() error {
 	}
 
 	r.Result = chain
-
-	// TODO: do we really need error management here? edge cases?
 	return nil
 }

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -41,15 +42,29 @@ func TestComputeResult(t *testing.T) {
 	tests := map[string]struct {
 		result   *Result
 		expected []string
+		error    error
 	}{
 		"case1": {
 			result: &Result{
 				Fizzbuzz: &Fizzbuzz{},
 			},
-			expected: []string{},
+			error: errors.New(""),
 		},
 
 		"case2": {
+			result: &Result{
+				Fizzbuzz: &Fizzbuzz{
+					ModA:     0,
+					ModB:     5,
+					Limit:    100,
+					ReplaceA: "fizz",
+					ReplaceB: "buzz",
+				},
+			},
+			error: errors.New(""),
+		},
+
+		"case3": {
 			result: &Result{
 				Fizzbuzz: &Fizzbuzz{
 					ModA:     3,
@@ -60,6 +75,7 @@ func TestComputeResult(t *testing.T) {
 				},
 			},
 			expected: []string{"1", "2", "fizz", "4", "buzz", "fizz", "7", "fizzbuzz", "fizz", "buzz", "11", "fizz", "13", "14", "fizz", "fizzbuzz", "17", "fizz", "19", "buzz", "fizz", "22", "23", "fizzbuzz", "buzz", "26", "fizz", "28", "29", "fizz", "31", "fizzbuzz", "fizz", "34", "buzz", "fizz", "37", "38", "fizz", "fizzbuzz", "41", "fizz", "43", "44", "fizz", "46", "47", "fizzbuzz", "49", "buzz", "fizz", "52", "53", "fizz", "buzz", "fizzbuzz", "fizz", "58", "59", "fizz", "61", "62", "fizz", "fizzbuzz", "buzz", "fizz", "67", "68", "fizz", "buzz", "71", "fizzbuzz", "73", "74", "fizz", "76", "77", "fizz", "79", "fizzbuzz", "fizz", "82", "83", "fizz", "buzz", "86", "fizz", "fizzbuzz", "89", "fizz", "91", "92", "fizz", "94", "buzz", "fizzbuzz", "97", "98", "fizz"},
+			error:    nil,
 		},
 	}
 
@@ -67,8 +83,7 @@ func TestComputeResult(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			err := tc.result.ComputeResult()
 			assert.Equal(t, tc.expected, tc.result.Result)
-			assert.NoError(t, err)
+			assert.IsType(t, tc.error, err)
 		})
 	}
-
 }

@@ -72,7 +72,11 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 	if result.Hash != hash {
 		result.Hash = hash
 		result.Fizzbuzz = fizzbuzz
-		// TODO: process calc
+		err = result.ComputeResult()
+		if err != nil {
+			h.LogErrorMessage("handlers.fizzbuzz", err, "Error computing fizzbuzz result")
+			return h.RespondJSONBadRequest()
+		}
 
 		json, err := json.Marshal(result)
 		if err != nil {
