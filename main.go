@@ -51,7 +51,7 @@ func main() {
 	e.GET("/", h.GetAPIVersion)
 	v1.POST("/fizzbuzz/compute", h.ComputeFizzbuzz) // NOTE: due to many parameters I am going for POST (dont't like overstuffing URLs)
 	v1.GET("/fizzbuzz/:hash", h.GetFizzbuzzFromHash)
-	// TODO: v1/fizzbuzz/stats
+	v1.GET("/fizzbuzz/stats", h.GetComputeByDescHitScore)
 
 	// Server
 	e.Logger.Fatal(e.StartTLS(":"+os.Getenv("HTTP_PORT"), os.Getenv("CERT_PEM"), os.Getenv("KEY_PEM")))

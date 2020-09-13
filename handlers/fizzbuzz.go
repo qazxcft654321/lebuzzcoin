@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -42,7 +41,7 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 
 	hash := fizzbuzz.HashData()
 
-	// Retrive from cache
+	// Retrieve from cache
 	cache, err := h.cache.Get(hash)
 	if err != nil && err.Error() != dbCache.Empty {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
@@ -59,10 +58,9 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 		}
 		result.Flag = "cached"
 
-		// TODO: extract
 		// Increment sorted set member
 		go func() {
-			test, err := h.cache.ZIncr(SortedSetKey, &dbCache.ZMember{Score: 1, Member: hash})
+			_, err := h.cache.ZIncr(SortedSetKey, &dbCache.ZMember{Score: 1, Member: hash})
 			if err != nil {
 				h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching sorted set")
 			}
@@ -88,10 +86,9 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 		}
 		result.Flag = "built"
 
-		// TODO: extract
 		// Add member to sorted set
 		go func() {
-			test, err := h.cache.ZAdd(SortedSetKey, &dbCache.ZMember{Score: 1, Member: hash})
+			_, err := h.cache.ZAdd(SortedSetKey, &dbCache.ZMember{Score: 1, Member: hash})
 			if err != nil {
 				h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching sorted set")
 			}
@@ -114,9 +111,9 @@ func (h *Handler) GetFizzbuzzFromHash(c echo.Context) error {
 		return h.RespondJSONForbidden()
 	}
 
-	// Retrive from cache
+	// Retrieve from cache
 	cache, err := h.cache.Get(hash)
-	if err != nil || err.Error() == dbCache.Empty {
+	if err != nil {
 		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
 		return h.RespondJSONBadRequest()
 	}
@@ -135,5 +132,49 @@ func (h *Handler) GetFizzbuzzFromHash(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": RESPONSE_STATUS_SUCCESS,
 		"data":   result,
+	})
+}
+
+func (h *Handler) GetComputeByDescHitScore(c echo.Context) error {
+	members, err := h.cache.ZRevRangeWithScores(SortedSetKey, 0, 3)
+	if err != nil {
+		h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
+		return h.RespondJSONBadRequest()
+	}
+
+	if len(members) < 1 {
+		return h.RespondJSONNoContent()
+	}
+
+	type Stats struct {
+		Hits   float64
+		Result *models.Result
+	}
+
+	// Retrieve from cache
+	stats := make([]Stats, 0, len(members))
+	for _, v := range members {
+		if v.Member != nil {
+			cache, err := h.cache.Get(v.Member.(string))
+			if err != nil {
+				h.LogErrorMessage("handlers.fizzbuzz", err, "Error retrieving data from cache")
+				return h.RespondJSONBadRequest()
+			}
+
+			result := &models.Result{}
+			err = json.Unmarshal([]byte(cache), result)
+			if err != nil {
+				h.LogErrorMessage("handlers.fizzbuzz", err, "Error decoding struct from json")
+				return h.RespondJSONBadRequest()
+			}
+			result.Flag = "cached"
+
+			stats = append(stats, Stats{Hits: v.Score, Result: result})
+		}
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": RESPONSE_STATUS_SUCCESS,
+		"data":   stats,
 	})
 }

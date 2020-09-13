@@ -38,7 +38,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"mod_a\": 2,\n\t\"mod_b\": 5,\n\t\"limit\": 1000,\n\t\"replace_a\": \"testA\",\n\t\"replace_b\": \"testB\"\n}",
+					"raw": "{\n\t\"mod_a\": 2,\n\t\"mod_b\": 3,\n\t\"limit\": 1000,\n\t\"replace_a\": \"testA\",\n\t\"replace_b\": \"testB\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -62,12 +62,12 @@
 			"response": []
 		},
 		{
-			"name": "fizzbuzz from cache",
+			"name": "fizzbuzz from hash",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:4433/v1/fizzbuzz/8c226d1fc7d66d45192f02eeefd85c0d99b729926c17c1632a32f53dbbd5657a",
+					"raw": "https://localhost:4433/v1/fizzbuzz/d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -76,7 +76,28 @@
 					"path": [
 						"v1",
 						"fizzbuzz",
-						"8c226d1fc7d66d45192f02eeefd85c0d99b729926c17c1632a32f53dbbd5657a"
+						"d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fizzbuzz stats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:4433/v1/fizzbuzz/stats",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "4433",
+					"path": [
+						"v1",
+						"fizzbuzz",
+						"stats"
 					]
 				}
 			},

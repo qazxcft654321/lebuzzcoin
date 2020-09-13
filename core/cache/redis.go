@@ -15,6 +15,7 @@ type Store interface {
 	Get(key string) (string, error)
 	ZAdd(key string, member *ZMember) (int64, error)
 	ZIncr(key string, member *ZMember) (float64, error)
+	ZRevRangeWithScores(key string, start, stop int64) ([]ZMember, error)
 }
 
 type Client struct {
@@ -54,18 +55,26 @@ func (c *Client) Set(key string, value interface{}, exp time.Duration) error {
 
 func (c *Client) Get(key string) (string, error) {
 	ctx := context.Background()
-	get, err := c.client.Get(ctx, key).Result()
-	return get, err
+	return c.client.Get(ctx, key).Result()
 }
 
 func (c *Client) ZAdd(key string, member *ZMember) (int64, error) {
 	ctx := context.Background()
-	count, err := c.client.ZAdd(ctx, key, &redis.Z{Score: member.Score, Member: member.Member}).Result()
-	return count, err
+	return c.client.ZAdd(ctx, key, &redis.Z{Score: member.Score, Member: member.Member}).Result()
 }
 
 func (c *Client) ZIncr(key string, member *ZMember) (float64, error) {
 	ctx := context.Background()
-	count, err := c.client.ZIncr(ctx, key, &redis.Z{Score: member.Score, Member: member.Member}).Result()
-	return count, err
+	return c.client.ZIncr(ctx, key, &redis.Z{Score: member.Score, Member: member.Member}).Result()
+}
+
+func (c *Client) ZRevRangeWithScores(key string, start, stop int64) ([]ZMember, error) {
+	ctx := context.Background()
+	members, err := c.client.ZRevRangeWithScores(ctx, key, start, stop).Result()
+	res := make([]ZMember, len(members))
+	for _, v := range members {
+		res = append(res, ZMember{Score: v.Score, Member: v.Member})
+	}
+
+	return res, err
 }
