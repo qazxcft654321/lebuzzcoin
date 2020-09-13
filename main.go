@@ -31,7 +31,7 @@ func main() {
 	// Cache
 	cache, err := cache.NewCache(cache.Options{Address: os.Getenv("REDIS_ADDR")})
 	if err != nil {
-		e.Logger.Fatalf("Cannot ping: %v \n", err)
+		e.Logger.Fatalf("Cannot ping cache DB: %v \n", err)
 	}
 
 	// Setup some middlewares at router level

@@ -38,7 +38,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"mod_a\": 2,\n\t\"mod_b\": 3,\n\t\"limit\": 1000,\n\t\"replace_a\": \"testA\",\n\t\"replace_b\": \"testB\"\n}",
+					"raw": "{\n\t\"mod_a\": 3,\n\t\"mod_b\": 5,\n\t\"limit\": 100,\n\t\"replace_a\": \"testA\",\n\t\"replace_b\": \"testB\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -67,7 +67,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:4433/v1/fizzbuzz/d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476",
+					"raw": "https://localhost:4433/v1/fizzbuzz/9c0a366de5ce66fcc0e89801d8ec7ccb46eb2ee4e942072812f4371695faf5d5",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -76,7 +76,7 @@
 					"path": [
 						"v1",
 						"fizzbuzz",
-						"d695743ec1d546f0bfec475d27edf126212b02b457b724d4ff95dd3e5e3d2476"
+						"9c0a366de5ce66fcc0e89801d8ec7ccb46eb2ee4e942072812f4371695faf5d5"
 					]
 				}
 			},

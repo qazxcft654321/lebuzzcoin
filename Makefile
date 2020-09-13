@@ -1,10 +1,11 @@
 PROJECT_NAME=lebuzzcoin
 GOOS=linux
+ARCH=amd64
 BINARY_NAME=app
 PKG_LIST := $(shell go list $(PROJECT_NAME)/...)
 
-build: ## Build the binary file
-	CGO_ENABLED=0 GOOS=$(GOOS) go build -a -installsuffix cgo -o $(BINARY_NAME) .
+build: ## Build the binary file for linux amd64
+	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(ARCH) go build -a -installsuffix cgo -o $(BINARY_NAME) .
 
 run: ## Run entire project
 	@go run .
