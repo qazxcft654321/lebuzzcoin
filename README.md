@@ -16,10 +16,7 @@
    * start/stop redis container: `docker start redis_dev` / `docker stop redis_dev`
    * ressource: [official-redis](https://hub.docker.com/_/redis)
    * install [mkcert](https://blog.filippo.io/mkcert-valid-https-certificates-for-localhost/)
-   * generate self-signed certificates: `mkdir ./tls && \ 
-   cd ./tls/ && \
-   mkcert -install && \
-   mkcert localhost`
+   * generate self-signed certificates: `mkdir ./tls && cd ./tls/ && mkcert -install && mkcert localhost`
    * create .env file`cp env.example .env`
    * edit .env TLS configuration: `CERT_PEM="tls/localhost.pem"`, `KEY_PEM="tls/localhost-key.pem"`
    * enable GOMODULE: `export GO111MODULE=on`
