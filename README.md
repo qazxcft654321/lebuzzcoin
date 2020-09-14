@@ -29,6 +29,7 @@
 2. test API:
    * import http requests collection `lebuzzcoin.postman_collection.json` in [postman](https://www.getpostman.com)
 
+
 # Project tree
 
 ├── Dockerfile\
@@ -36,25 +37,25 @@
 ├── README.md\
 ├── VERSION\
 ├── core\
-│   ├── api\
-│   │   ├── api.go\
-│   │   └── api_test.go\
-│   └── cache\
-│       ├── redis.go\
-│       └── redis_test.go\
+│   ├── api\
+│   │   ├── api.go\
+│   │   └── api_test.go\
+│   └── cache\
+│       ├── redis.go\
+│       └── redis_test.go\
 ├── docker-compose.yml\
 ├── go.mod\
 ├── go.sum\
 ├── handlers\
-│   ├── fizzbuzz.go\
-│   ├── fizzbuzz_test.go\
-│   ├── handler.go\
-│   └── handler_test.go\
+│   ├── fizzbuzz.go\
+│   ├── fizzbuzz_test.go\
+│   ├── handler.go\
+│   └── handler_test.go\
 ├── lebuzzcoin.postman_collection.json\
 ├── main.go\
 ├── middlewares\
-│   ├── limiter.go\
-│   └── limiter_test.go\
+│   ├── limiter.go\
+│   └── limiter_test.go\
 └── models\
     ├── fizzbuzz.go\
     └── fizzbuzz_test.go
@@ -63,4 +64,3 @@
 
 * [Docker-cli](https://docs.docker.com/engine/reference/commandline/cli/)
 * [Golang Echo](https://github.com/labstack/echo)
-
