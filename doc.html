@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>lebuzzcoin</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>
+        hljs.configure({
+            tabReplace: '    ',
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <style>body {
+    position: relative;
+}
+
+h1 {
+    margin-top: 5px;
+}
+
+h1, h2, h3, h4 {
+    color: #2b2b2b;
+}
+
+h2:after {
+    content: ' ';
+}
+
+h5 {
+    font-weight: bold;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    display: none;
+    position: absolute;
+    margin-left: 8px;
+}
+
+h1:hover a, h2:hover a, h3:hover a, h4:hover a, h5:hover a, h6:hover a {
+    color: #a5a5a5;
+    display: initial;
+}
+
+.nav.nav-tabs > li > a {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.tab-content {
+    padding-top: 8px;
+}
+
+.table {
+    margin-bottom: 8px;
+}
+
+pre {
+    border-radius: 0px;
+    border: none;
+}
+
+pre code {
+    margin: -9.5px;
+}
+
+.request {
+    margin-top: 12px;
+    margin-bottom: 24px;
+}
+
+.response-text-sample {
+    padding: 0px !important;
+}
+
+.response-text-sample pre {
+    margin-bottom: 0px;
+}
+
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 250px;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #2b2b2b;
+    padding-top: 20px;
+}
+
+#sidebar-wrapper ul {
+    width: 250px;
+}
+
+#sidebar-wrapper ul li {
+    margin-right: 10px;
+}
+
+#sidebar-wrapper ul li a:hover {
+    background: inherit;
+    text-decoration: none;
+}
+
+#sidebar-wrapper ul li a {
+    display: block;
+    color: #ECF0F1;
+    padding: 6px 15px;
+}
+
+#sidebar-wrapper ul li ul {
+    padding-left: 25px;
+}
+
+#sidebar-wrapper ul li ul li a {
+    padding: 1px 0px;
+}
+
+#sidebar-wrapper ul li a:hover,
+#sidebar-wrapper ul li a:focus {
+    color: #e0c46c;
+    border-right: solid 1px #e0c46c;
+}
+
+#sidebar-wrapper ul li.active > a {
+    color: #e0c46c;
+    border-right: solid 3px #e0c46c;
+}
+
+#sidebar-wrapper ul li:not(.active) ul {
+    display: none;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 15px 15px 15px 250px;
+}
+</style>
+</head>
+<body data-spy="scroll" data-target=".scrollspy">
+<div id="sidebar-wrapper">
+    <div class="scrollspy">
+    <ul id="main-menu" data-spy="affix" class="nav">
+        <li>
+            <a href="#doc-general-notes">General notes</a>
+        </li>
+        
+        <li>
+            <a href="#doc-api-detail">API detail</a>
+        </li>
+        
+        <li>
+            <a href="#request-api-version-health-check">API version / health check</a>
+        </li>
+        
+        <li>
+            <a href="#request-fizzbuzz-compute">fizzbuzz compute</a>
+        </li>
+        
+        <li>
+            <a href="#request-fizzbuzz-from-hash">fizzbuzz from hash</a>
+        </li>
+        
+        <li>
+            <a href="#request-fizzbuzz-stats">fizzbuzz stats</a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+</div>
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>lebuzzcoin</h1>
+
+                <h2 id="doc-general-notes">
+                    General notes
+                    <a href="#doc-general-notes"><i class="glyphicon glyphicon-link"></i></a>
+                </h2>
+
+                <p>Home assignement from Leboncoin</p>
+
+<p>Exercise: Write a simple fizz-buzz REST server. <br />
+The original fizz-buzz consists in writing all numbers from 1 to 100, and just replacing all multiples of 3 by &ldquo;fizz&rdquo;, all multiples of 5 by &ldquo;buzz&rdquo;, and all multiples of 15 by &ldquo;fizzbuzz&rdquo;. The output would look like this: &ldquo;1,2,fizz,4,buzz,fizz,7,8,fizz,buzz,11,fizz,13,14,fizzbuzz,16,&hellip;&rdquo;.</p>
+
+<p>Your goal is to implement a web server that will expose a REST API endpoint that: <br />
+Accepts five parameters : three integers int1, int2 and limit, and two strings str1 and str2.<br />
+Returns a list of strings with numbers from 1 to limit, where: all multiples of int1 are replaced by str1, all multiples of int2 are replaced by str2, all multiples of int1 and int2 are replaced by str1str2.</p>
+
+<p>The server needs to be:
+- Ready for production
+- Easy to maintain by other developers</p>
+
+<p>Bonus Question :<br />
+- Add a statistics endpoint allowing users to know what the most frequent request has been.<br />
+This endpoint should:<br />
+- Accept no parameter<br />
+- Return the parameters corresponding to the most used request, as well as the number of hits for this request</p>
+
+
+                
+
+                <h2 id="doc-api-detail">
+                    API detail
+                    <a href="#doc-api-detail"><i class="glyphicon glyphicon-link"></i></a>
+                </h2>
+
+                
+                
+                <div class="request">
+
+                    <h3 id="request-api-version-health-check">
+                        API version / health check
+                        <a href="#request-api-version-health-check"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div><p>Retrieve current API version.</p>
+</div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-api-version-health-check-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-api-version-health-check-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-api-version-health-check-example-curl">
+                                <pre><code class="hljs curl">curl -X GET "https://localhost:4433/"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-api-version-health-check-example-http">
+                                <pre><code class="hljs http">GET / HTTP/1.1
+Host: localhost:4433</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-api-version-health-check-responses-0ea170d7-b3fd-4007-8222-921743cfcde3" data-toggle="tab">
+                                    
+                                    Error
+                                    
+                                </a>
+                            </li>
+                            
+                            <li role="presentation">
+                                <a href="#request-api-version-health-check-responses-ec6d43df-1ee2-43ae-ac3e-274befaaa17c" data-toggle="tab">
+                                    
+                                    Default
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-api-version-health-check-responses-0ea170d7-b3fd-4007-8222-921743cfcde3">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>400 Bad Request</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>172.18.0.1:40022</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:36:04 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>65</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "message": "Server cannot process the request",
+    "status": "error"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                            <div class="tab-pane" id="request-api-version-health-check-responses-ec6d43df-1ee2-43ae-ac3e-274befaaa17c">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>192.168.240.1:37536</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:03:17 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>55</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "message": "Lebuzzcoin-API v1.0.0",
+    "status": "success"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-fizzbuzz-compute">
+                        fizzbuzz compute
+                        <a href="#request-fizzbuzz-compute"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div><p>Compute submited data to a &ldquo;fizzbuzz-like&rdquo; result. Parameters mod_a, mod_b and limit are limited to range from 1 to 1000 max. Strings replace_a and repalce_b must be 20Bytes long max.</p>
+</div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-fizzbuzz-compute-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-fizzbuzz-compute-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-fizzbuzz-compute-example-curl">
+                                <pre><code class="hljs curl">curl -X POST -H "Content-Type: application/json" -d '{
+	"mod_a": 3,
+	"mod_b": 5,
+	"limit": 10,
+	"replace_a": "lebuzz",
+	"replace_b": "coin"
+}' "https://localhost:4433/v1/fizzbuzz/compute"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-fizzbuzz-compute-example-http">
+                                <pre><code class="hljs http">POST /v1/fizzbuzz/compute HTTP/1.1
+Host: localhost:4433
+Content-Type: application/json
+
+{
+	"mod_a": 3,
+	"mod_b": 5,
+	"limit": 10,
+	"replace_a": "lebuzz",
+	"replace_b": "coin"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-fizzbuzz-compute-responses-dc5f0757-1e3e-40fe-bb7e-f82b8b702d70" data-toggle="tab">
+                                    
+                                    Error
+                                    
+                                </a>
+                            </li>
+                            
+                            <li role="presentation">
+                                <a href="#request-fizzbuzz-compute-responses-054338b8-e968-4643-ba27-4af2075673ce" data-toggle="tab">
+                                    
+                                    Default
+                                    
+                                </a>
+                            </li>
+                            
+                            <li role="presentation">
+                                <a href="#request-fizzbuzz-compute-responses-af63366a-e94f-47ea-a166-7203c5900447" data-toggle="tab">
+                                    
+                                    Invalid
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-fizzbuzz-compute-responses-dc5f0757-1e3e-40fe-bb7e-f82b8b702d70">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>400 Bad Request</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>172.18.0.1:40022</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:36:17 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>65</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "message": "Server cannot process the request",
+    "status": "error"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                            <div class="tab-pane" id="request-fizzbuzz-compute-responses-054338b8-e968-4643-ba27-4af2075673ce">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>192.168.240.1:37556</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:29:12 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>278</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "data": {
+        "hash": "da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b",
+        "fizzbuzz": {
+            "mod_a": 3,
+            "mod_b": 5,
+            "limit": 10,
+            "replace_a": "lebuzz",
+            "replace_b": "coin"
+        },
+        "result": [
+            "1",
+            "2",
+            "lebuzz",
+            "4",
+            "coin",
+            "lebuzz",
+            "7",
+            "lebuzzcoin",
+            "lebuzz"
+        ],
+        "state": "built"
+    },
+    "status": "success"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                            <div class="tab-pane" id="request-fizzbuzz-compute-responses-af63366a-e94f-47ea-a166-7203c5900447">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>403 Forbidden</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>192.168.240.1:37556</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:30:00 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>51</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "message": "Invalid request",
+    "status": "forbidden"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-fizzbuzz-from-hash">
+                        fizzbuzz from hash
+                        <a href="#request-fizzbuzz-from-hash"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div><p>Retrieve fizzbuzz from hash. Hash must be sha(256) hex, 32Bytes long.</p>
+</div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-fizzbuzz-from-hash-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-fizzbuzz-from-hash-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-fizzbuzz-from-hash-example-curl">
+                                <pre><code class="hljs curl">curl -X GET "https://localhost:4433/v1/fizzbuzz/da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-fizzbuzz-from-hash-example-http">
+                                <pre><code class="hljs http">GET /v1/fizzbuzz/da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b HTTP/1.1
+Host: localhost:4433</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-fizzbuzz-from-hash-responses-6cb6c363-5aca-4b78-a3de-f6f0f9d2c435" data-toggle="tab">
+                                    
+                                    Invalid
+                                    
+                                </a>
+                            </li>
+                            
+                            <li role="presentation">
+                                <a href="#request-fizzbuzz-from-hash-responses-45f084c5-36a0-4018-a9af-d996f4341163" data-toggle="tab">
+                                    
+                                    Error
+                                    
+                                </a>
+                            </li>
+                            
+                            <li role="presentation">
+                                <a href="#request-fizzbuzz-from-hash-responses-94442d61-95f3-47b3-86e9-bf03eab7fb97" data-toggle="tab">
+                                    
+                                    Default
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-fizzbuzz-from-hash-responses-6cb6c363-5aca-4b78-a3de-f6f0f9d2c435">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>403 Forbidden</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>192.168.240.1:37556</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:31:31 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>51</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "message": "Invalid request",
+    "status": "forbidden"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                            <div class="tab-pane" id="request-fizzbuzz-from-hash-responses-45f084c5-36a0-4018-a9af-d996f4341163">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>400 Bad Request</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>172.18.0.1:40022</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:36:28 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>65</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "message": "Server cannot process the request",
+    "status": "error"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                            <div class="tab-pane" id="request-fizzbuzz-from-hash-responses-94442d61-95f3-47b3-86e9-bf03eab7fb97">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>192.168.240.1:37556</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:29:24 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>279</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "data": {
+        "hash": "da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b",
+        "fizzbuzz": {
+            "mod_a": 3,
+            "mod_b": 5,
+            "limit": 10,
+            "replace_a": "lebuzz",
+            "replace_b": "coin"
+        },
+        "result": [
+            "1",
+            "2",
+            "lebuzz",
+            "4",
+            "coin",
+            "lebuzz",
+            "7",
+            "lebuzzcoin",
+            "lebuzz"
+        ],
+        "state": "cached"
+    },
+    "status": "success"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-fizzbuzz-stats">
+                        fizzbuzz stats
+                        <a href="#request-fizzbuzz-stats"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div><p>Return top3 compute requests</p>
+</div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-fizzbuzz-stats-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-fizzbuzz-stats-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-fizzbuzz-stats-example-curl">
+                                <pre><code class="hljs curl">curl -X GET "https://localhost:4433/v1/fizzbuzz/stats"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-fizzbuzz-stats-example-http">
+                                <pre><code class="hljs http">GET /v1/fizzbuzz/stats HTTP/1.1
+Host: localhost:4433</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-fizzbuzz-stats-responses-b278f1a1-0abd-4abb-a7c8-45a8c40dcd48" data-toggle="tab">
+                                    
+                                    Default
+                                    
+                                </a>
+                            </li>
+                            
+                            <li role="presentation">
+                                <a href="#request-fizzbuzz-stats-responses-eda7c7ee-781e-41c9-9a7a-904d142bc65f" data-toggle="tab">
+                                    
+                                    Error
+                                    
+                                </a>
+                            </li>
+                            
+                            <li role="presentation">
+                                <a href="#request-fizzbuzz-stats-responses-69049b1e-e37f-4e7d-9d23-c71d1de8bbb4" data-toggle="tab">
+                                    
+                                    Empty
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-fizzbuzz-stats-responses-b278f1a1-0abd-4abb-a7c8-45a8c40dcd48">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>192.168.240.1:37556</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:31:47 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>871</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "data": [
+        {
+            "Hits": 5,
+            "Result": {
+                "hash": "da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b",
+                "fizzbuzz": {
+                    "mod_a": 3,
+                    "mod_b": 5,
+                    "limit": 10,
+                    "replace_a": "lebuzz",
+                    "replace_b": "coin"
+                },
+                "result": [
+                    "1",
+                    "2",
+                    "lebuzz",
+                    "4",
+                    "coin",
+                    "lebuzz",
+                    "7",
+                    "lebuzzcoin",
+                    "lebuzz"
+                ],
+                "state": "cached"
+            }
+        },
+        {
+            "Hits": 3,
+            "Result": {
+                "hash": "19be807c098d30ec440623adbfaf65e0a531925ca5c2ad4493cbe3d28f833e24",
+                "fizzbuzz": {
+                    "mod_a": 3,
+                    "mod_b": 5,
+                    "limit": 11,
+                    "replace_a": "lebuzz",
+                    "replace_b": "coin"
+                },
+                "result": [
+                    "1",
+                    "2",
+                    "lebuzz",
+                    "4",
+                    "coin",
+                    "lebuzz",
+                    "7",
+                    "lebuzzcoin",
+                    "lebuzz",
+                    "coin"
+                ],
+                "state": "cached"
+            }
+        },
+        {
+            "Hits": 1,
+            "Result": {
+                "hash": "eeea99f713037e4536506988b5c63abab9c6d1d9f82583f26f75d8a871749554",
+                "fizzbuzz": {
+                    "mod_a": 3,
+                    "mod_b": 5,
+                    "limit": 13,
+                    "replace_a": "lebuzz",
+                    "replace_b": "coin"
+                },
+                "result": [
+                    "1",
+                    "2",
+                    "lebuzz",
+                    "4",
+                    "coin",
+                    "lebuzz",
+                    "7",
+                    "lebuzzcoin",
+                    "lebuzz",
+                    "coin",
+                    "11",
+                    "lebuzz"
+                ],
+                "state": "cached"
+            }
+        }
+    ],
+    "status": "success"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                            <div class="tab-pane" id="request-fizzbuzz-stats-responses-eda7c7ee-781e-41c9-9a7a-904d142bc65f">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>400 Bad Request</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>172.18.0.1:40022</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:36:38 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>65</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "message": "Server cannot process the request",
+    "status": "error"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                            <div class="tab-pane" id="request-fizzbuzz-stats-responses-69049b1e-e37f-4e7d-9d23-c71d1de8bbb4">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Access-Control-Allow-Origin</th><td>*</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Security-Policy</th><td>frame-ancestors 'none'</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json; charset=UTF-8</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Strict-Transport-Security</th><td>max-age=3600; includeSubdomains</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Frame-Options</th><td>DENY</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Duration</th><td>1</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Limit</th><td>2.00</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Forwarded-For</th><td></td></tr>
+                                    
+                                    <tr><th style="width: 20%;">X-Rate-Limit-Request-Remote-Addr</th><td>192.168.240.1:37556</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Mon, 14 Sep 2020 12:32:18 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Length</th><td>31</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "data": [],
+    "status": "success"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("table:not(.table)").addClass('table table-bordered');
+    });
+</script>
+</body>
+</html>

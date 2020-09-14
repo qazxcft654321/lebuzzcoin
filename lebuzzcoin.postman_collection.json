@@ -2,12 +2,12 @@
 	"info": {
 		"_postman_id": "c607bb48-d165-4d4c-ac55-968c4e6ed816",
 		"name": "lebuzzcoin",
-		"description": "home assignement",
+		"description": "Home assignement from Leboncoin\n\nExercise: Write a simple fizz-buzz REST server. \\\nThe original fizz-buzz consists in writing all numbers from 1 to 100, and just replacing all multiples of 3 by \"fizz\", all multiples of 5 by \"buzz\", and all multiples of 15 by \"fizzbuzz\". The output would look like this: \"1,2,fizz,4,buzz,fizz,7,8,fizz,buzz,11,fizz,13,14,fizzbuzz,16,...\".\n\nYour goal is to implement a web server that will expose a REST API endpoint that: \\\nAccepts five parameters : three integers int1, int2 and limit, and two strings str1 and str2.\\\nReturns a list of strings with numbers from 1 to limit, where: all multiples of int1 are replaced by str1, all multiples of int2 are replaced by str2, all multiples of int1 and int2 are replaced by str1str2.\n\nThe server needs to be:\n- Ready for production\n- Easy to maintain by other developers\n \nBonus Question :\\\n- Add a statistics endpoint allowing users to know what the most frequent request has been.\\\nThis endpoint should:\\\n- Accept no parameter\\\n- Return the parameters corresponding to the most used request, as well as the number of hits for this request",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "API version",
+			"name": "API version / health check",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -21,9 +21,157 @@
 					"path": [
 						""
 					]
-				}
+				},
+				"description": "Retrieve current API version."
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:4433/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "172.18.0.1:40022"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:36:04 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "65"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Server cannot process the request\",\n    \"status\": \"error\"\n}"
+				},
+				{
+					"name": "Default",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:4433/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "192.168.240.1:37536"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:03:17 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "55"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Lebuzzcoin-API v1.0.0\",\n    \"status\": \"success\"\n}"
+				}
+			]
 		},
 		{
 			"name": "fizzbuzz compute",
@@ -38,7 +186,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"mod_a\": 3,\n\t\"mod_b\": 5,\n\t\"limit\": 100,\n\t\"replace_a\": \"testA\",\n\t\"replace_b\": \"testB\"\n}",
+					"raw": "{\n\t\"mod_a\": 3,\n\t\"mod_b\": 5,\n\t\"limit\": 10,\n\t\"replace_a\": \"lebuzz\",\n\t\"replace_b\": \"coin\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -57,9 +205,281 @@
 						"fizzbuzz",
 						"compute"
 					]
-				}
+				},
+				"description": "Compute submited data to a \"fizzbuzz-like\" result. Parameters mod_a, mod_b and limit are limited to range from 1 to 1000 max. Strings replace_a and repalce_b must be 20Bytes long max."
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"mod_a\": 3,\n\t\"mod_b\": 5,\n\t\"limit\": 10,\n\t\"replace_a\": \"lebuzz\",\n\t\"replace_b\": \"coin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/compute",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"compute"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "172.18.0.1:40022"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:36:17 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "65"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Server cannot process the request\",\n    \"status\": \"error\"\n}"
+				},
+				{
+					"name": "Default",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"mod_a\": 3,\n\t\"mod_b\": 5,\n\t\"limit\": 10,\n\t\"replace_a\": \"lebuzz\",\n\t\"replace_b\": \"coin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/compute",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"compute"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "192.168.240.1:37556"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:29:12 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "278"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"hash\": \"da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b\",\n        \"fizzbuzz\": {\n            \"mod_a\": 3,\n            \"mod_b\": 5,\n            \"limit\": 10,\n            \"replace_a\": \"lebuzz\",\n            \"replace_b\": \"coin\"\n        },\n        \"result\": [\n            \"1\",\n            \"2\",\n            \"lebuzz\",\n            \"4\",\n            \"coin\",\n            \"lebuzz\",\n            \"7\",\n            \"lebuzzcoin\",\n            \"lebuzz\"\n        ],\n        \"state\": \"built\"\n    },\n    \"status\": \"success\"\n}"
+				},
+				{
+					"name": "Invalid",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"mod_a\": 3,\n\t\"mod_b\": 5,\n\t\"limit\": 10000,\n\t\"replace_a\": \"lebuzz\",\n\t\"replace_b\": \"coin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/compute",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"compute"
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "192.168.240.1:37556"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:30:00 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "51"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Invalid request\",\n    \"status\": \"forbidden\"\n}"
+				}
+			]
 		},
 		{
 			"name": "fizzbuzz from hash",
@@ -67,7 +487,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:4433/v1/fizzbuzz/9c0a366de5ce66fcc0e89801d8ec7ccb46eb2ee4e942072812f4371695faf5d5",
+					"raw": "https://localhost:4433/v1/fizzbuzz/da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -76,11 +496,238 @@
 					"path": [
 						"v1",
 						"fizzbuzz",
-						"9c0a366de5ce66fcc0e89801d8ec7ccb46eb2ee4e942072812f4371695faf5d5"
+						"da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b"
 					]
-				}
+				},
+				"description": "Retrieve fizzbuzz from hash. Hash must be sha(256) hex, 32Bytes long."
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Invalid",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/da2a9c574d391691853274+6ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"da2a9c574d391691853274+6ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b"
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "192.168.240.1:37556"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:31:31 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "51"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Invalid request\",\n    \"status\": \"forbidden\"\n}"
+				},
+				{
+					"name": "Error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "172.18.0.1:40022"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:36:28 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "65"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Server cannot process the request\",\n    \"status\": \"error\"\n}"
+				},
+				{
+					"name": "Default",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "192.168.240.1:37556"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:29:24 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "279"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"hash\": \"da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b\",\n        \"fizzbuzz\": {\n            \"mod_a\": 3,\n            \"mod_b\": 5,\n            \"limit\": 10,\n            \"replace_a\": \"lebuzz\",\n            \"replace_b\": \"coin\"\n        },\n        \"result\": [\n            \"1\",\n            \"2\",\n            \"lebuzz\",\n            \"4\",\n            \"coin\",\n            \"lebuzz\",\n            \"7\",\n            \"lebuzzcoin\",\n            \"lebuzz\"\n        ],\n        \"state\": \"cached\"\n    },\n    \"status\": \"success\"\n}"
+				}
+			]
 		},
 		{
 			"name": "fizzbuzz stats",
@@ -99,9 +746,258 @@
 						"fizzbuzz",
 						"stats"
 					]
-				}
+				},
+				"description": "Return top3 compute requests"
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Default",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/stats",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"stats"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "192.168.240.1:37556"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:31:47 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "871"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"Hits\": 5,\n            \"Result\": {\n                \"hash\": \"da2a9c574d3916918532746ec0221bf8d82d909d8ae62e63a8b6f7c13d5ec72b\",\n                \"fizzbuzz\": {\n                    \"mod_a\": 3,\n                    \"mod_b\": 5,\n                    \"limit\": 10,\n                    \"replace_a\": \"lebuzz\",\n                    \"replace_b\": \"coin\"\n                },\n                \"result\": [\n                    \"1\",\n                    \"2\",\n                    \"lebuzz\",\n                    \"4\",\n                    \"coin\",\n                    \"lebuzz\",\n                    \"7\",\n                    \"lebuzzcoin\",\n                    \"lebuzz\"\n                ],\n                \"state\": \"cached\"\n            }\n        },\n        {\n            \"Hits\": 3,\n            \"Result\": {\n                \"hash\": \"19be807c098d30ec440623adbfaf65e0a531925ca5c2ad4493cbe3d28f833e24\",\n                \"fizzbuzz\": {\n                    \"mod_a\": 3,\n                    \"mod_b\": 5,\n                    \"limit\": 11,\n                    \"replace_a\": \"lebuzz\",\n                    \"replace_b\": \"coin\"\n                },\n                \"result\": [\n                    \"1\",\n                    \"2\",\n                    \"lebuzz\",\n                    \"4\",\n                    \"coin\",\n                    \"lebuzz\",\n                    \"7\",\n                    \"lebuzzcoin\",\n                    \"lebuzz\",\n                    \"coin\"\n                ],\n                \"state\": \"cached\"\n            }\n        },\n        {\n            \"Hits\": 1,\n            \"Result\": {\n                \"hash\": \"eeea99f713037e4536506988b5c63abab9c6d1d9f82583f26f75d8a871749554\",\n                \"fizzbuzz\": {\n                    \"mod_a\": 3,\n                    \"mod_b\": 5,\n                    \"limit\": 13,\n                    \"replace_a\": \"lebuzz\",\n                    \"replace_b\": \"coin\"\n                },\n                \"result\": [\n                    \"1\",\n                    \"2\",\n                    \"lebuzz\",\n                    \"4\",\n                    \"coin\",\n                    \"lebuzz\",\n                    \"7\",\n                    \"lebuzzcoin\",\n                    \"lebuzz\",\n                    \"coin\",\n                    \"11\",\n                    \"lebuzz\"\n                ],\n                \"state\": \"cached\"\n            }\n        }\n    ],\n    \"status\": \"success\"\n}"
+				},
+				{
+					"name": "Error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/stats",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"stats"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "172.18.0.1:40022"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:36:38 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "65"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Server cannot process the request\",\n    \"status\": \"error\"\n}"
+				},
+				{
+					"name": "Empty",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:4433/v1/fizzbuzz/stats",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "4433",
+							"path": [
+								"v1",
+								"fizzbuzz",
+								"stats"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "frame-ancestors 'none'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=3600; includeSubdomains"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Rate-Limit-Duration",
+							"value": "1"
+						},
+						{
+							"key": "X-Rate-Limit-Limit",
+							"value": "2.00"
+						},
+						{
+							"key": "X-Rate-Limit-Request-Forwarded-For",
+							"value": ""
+						},
+						{
+							"key": "X-Rate-Limit-Request-Remote-Addr",
+							"value": "192.168.240.1:37556"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Sep 2020 12:32:18 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "31"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [],\n    \"status\": \"success\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "21463675-9ead-4d44-8197-aa0cb563406d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f3e7f717-03e4-4791-96ec-79de446798a7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"protocolProfileBehavior": {}
