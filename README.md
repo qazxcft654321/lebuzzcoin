@@ -1,8 +1,9 @@
 # Summary
 1. [Quick start](#quick-start)
-2. [Usefull tools](#usefull-tools)
-3. [Project tree](#project-tree)
-4. [Ressources](#ressources)
+2. [Endpoints documentation](#endpoints-documentation)
+3. [Usefull tools](#usefull-tools)
+4. [Project tree](#project-tree)
+5. [Ressources](#ressources)
 
 # Quick start
 
@@ -21,7 +22,11 @@
    * edit .env TLS configuration: `CERT_PEM="tls/localhost.pem"`, `KEY_PEM="tls/localhost-key.pem"`
    * enable GOMODULE: `export GO111MODULE=on`
    * run service: `make run`
-   
+
+# Endpoints documentation
+
+1. open `doc.html` in your browser
+
 # Usefull tools
 
 1. Makefile:
