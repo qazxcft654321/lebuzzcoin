@@ -38,9 +38,6 @@
 # Project tree
 
 ```bash
-├── Dockerfile
-├── Makefile
-├── README.md
 ├── VERSION
 ├── core
 │   ├── api
@@ -49,15 +46,11 @@
 │   └── cache
 │       ├── redis.go
 │       └── redis_test.go
-├── docker-compose.yml
-├── go.mod
-├── go.sum
 ├── handlers
 │   ├── fizzbuzz.go
 │   ├── fizzbuzz_test.go
 │   ├── handler.go
 │   └── handler_test.go
-├── lebuzzcoin.postman_collection.json
 ├── main.go
 ├── middlewares
 │   ├── limiter.go
