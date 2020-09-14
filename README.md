@@ -32,33 +32,35 @@
 
 # Project tree
 
-├── Dockerfile\
-├── Makefile\
-├── README.md\
-├── VERSION\
-├── core\
-│   ├── api\
-│   │   ├── api.go\
-│   │   └── api_test.go\
-│   └── cache\
-│       ├── redis.go\
-│       └── redis_test.go\
-├── docker-compose.yml\
-├── go.mod\
-├── go.sum\
-├── handlers\
-│   ├── fizzbuzz.go\
-│   ├── fizzbuzz_test.go\
-│   ├── handler.go\
-│   └── handler_test.go\
-├── lebuzzcoin.postman_collection.json\
-├── main.go\
-├── middlewares\
-│   ├── limiter.go\
-│   └── limiter_test.go\
-└── models\
-    ├── fizzbuzz.go\
+```bash
+├── Dockerfile
+├── Makefile
+├── README.md
+├── VERSION
+├── core
+│   ├── api
+│   │   ├── api.go
+│   │   └── api_test.go
+│   └── cache
+│       ├── redis.go
+│       └── redis_test.go
+├── docker-compose.yml
+├── go.mod
+├── go.sum
+├── handlers
+│   ├── fizzbuzz.go
+│   ├── fizzbuzz_test.go
+│   ├── handler.go
+│   └── handler_test.go
+├── lebuzzcoin.postman_collection.json
+├── main.go
+├── middlewares
+│   ├── limiter.go
+│   └── limiter_test.go
+└── models
+    ├── fizzbuzz.go
     └── fizzbuzz_test.go
+```
 
 # Ressources
 
