@@ -1,7 +1,8 @@
 # Summary
 1. [Quick start](#quick-start)
 2. [Usefull tools](#usefull-tools)
-3. [Ressources](#ressources)
+3. [Project tree](#project-tree)
+4. [Ressources](#ressources)
 
 # Quick start
 
@@ -28,39 +29,38 @@
 2. test API:
    * import http requests collection `lebuzzcoin.postman_collection.json` in [postman](https://www.getpostman.com)
 
-# Ressources
-
-* [Docker-cli](https://docs.docker.com/engine/reference/commandline/cli/)
-* [Golang Echo](https://github.com/labstack/echo)
-
-
 # Project tree
-
 
 ├── Dockerfile\
 ├── Makefile\
 ├── README.md\
 ├── VERSION\
 ├── core\
-│   ├── api\
-│   │   ├── api.go\
-│   │   └── api_test.go\
-│   └── cache\
-│       ├── redis.go\
-│       └── redis_test.go\
+│   ├── api\
+│   │   ├── api.go\
+│   │   └── api_test.go\
+│   └── cache\
+│       ├── redis.go\
+│       └── redis_test.go\
 ├── docker-compose.yml\
 ├── go.mod\
 ├── go.sum\
 ├── handlers\
-│   ├── fizzbuzz.go\
-│   ├── fizzbuzz_test.go\
-│   ├── handler.go\
-│   └── handler_test.go\
+│   ├── fizzbuzz.go\
+│   ├── fizzbuzz_test.go\
+│   ├── handler.go\
+│   └── handler_test.go\
 ├── lebuzzcoin.postman_collection.json\
 ├── main.go\
 ├── middlewares\
-│   ├── limiter.go\
-│   └── limiter_test.go\
+│   ├── limiter.go\
+│   └── limiter_test.go\
 └── models\
     ├── fizzbuzz.go\
-    └── fizzbuzz_test.go\
+    └── fizzbuzz_test.go
+
+# Ressources
+
+* [Docker-cli](https://docs.docker.com/engine/reference/commandline/cli/)
+* [Golang Echo](https://github.com/labstack/echo)
+
