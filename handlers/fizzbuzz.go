@@ -97,6 +97,8 @@ func (h *Handler) ComputeFizzbuzz(c echo.Context) error {
 			if err != nil {
 				h.LogErrorMessage("handlers.fizzbuzz", err, "Error caching sorted set")
 			}
+
+			return
 		}()
 	}
 
